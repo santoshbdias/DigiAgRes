@@ -1,6 +1,6 @@
 # 📦 DigiAgRes
 
-**DigiAgRes** é uma abreviação *Digital Argiculture Research*, pacote R voltado para o processamento de dados espaciais e meteorológicos, como a geração de grades de pontos em áreas agrícolas, integração com dados externos como o Wunderground e shapefiles geográficos. Ele oferece ferramentas simples e práticas para pesquisadores em agricultura digital.
+**DigiAgRes** é uma abreviação de **Digital Argiculture Research**, pacote R voltado para o processamento de dados espaciais e meteorológicos, como a geração de grades de pontos em áreas agrícolas, integração com dados externos como o Wunderground e shapefiles geográficos. Ele oferece ferramentas simples e práticas para pesquisadores em agricultura digital.
 
 ----
 
@@ -75,6 +75,7 @@ TopoData_download_to_vector(
 ---
 
 ## 👨‍💻 Autor</p>
+
 Desenvolvido por Prof. Dr. Santos Henrique Brant Dias</p>
 Para mais informações: [https://www.santoshbdias.com.br/](https://www.santoshbdias.com.br/)</p>
 E-mail: santoshbdias@gmail.com
