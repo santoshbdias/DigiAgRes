@@ -80,8 +80,3 @@ Desenvolvido por Prof. Dr. Santos Henrique Brant Dias</p>
 Para mais informações: [https://www.santoshbdias.com.br/](https://www.santoshbdias.com.br/)</p>
 E-mail: santoshbdias@gmail.com
 
----
-
-##  📄 Licença</p>
-Este pacote está licenciado sob a MIT License.
-
