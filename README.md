@@ -75,7 +75,7 @@ TopoData_download_to_vector(
 ---
 
 👨‍💻 Autor
-Desenvolvido por Santos H. B. Dias
+Desenvolvido por Santos H. B. Dias<b>
 E-mail: santoshbdias@gmail.com
 ---
 
