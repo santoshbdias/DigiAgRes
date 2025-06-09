@@ -20,6 +20,7 @@ station_wund_download <- function(stations, start_date, end_date) {
 
   datas <- seq(as.Date(start_date), as.Date(end_date), by = "1 day")
 
+
   for (f in 1:length(stations)){
     for (i in 1:length(datas)) {
 
