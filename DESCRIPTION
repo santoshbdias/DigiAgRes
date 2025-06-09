@@ -1,17 +1,23 @@
 Package: DigiAgRes
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Tools for Digital Agriculture Research and Spatial Data Handling
 Version: 0.1.0
 Authors@R: c(
     person(
-      "Jane", "Doe",
-      email = "jane@example.com",
-      role = c("aut", "cre")
-    )
-  )
-Description: More about what it does (maybe more than one line).
-    Continuation lines should be indented.
-License: What license is it under?
+      given = "Santos Henrique",
+      family = "Brant Dias",
+      email = "santoshbdias@gmail.com",
+      comment = c(ORCID = "0000-0001-7800-5416"),
+      role = c("aut", "cre")))
+Description: A collection of functions for researchers in digital agriculture to access,
+    process, and visualize meteorological and spatial data. Includes tools to download
+    weather data from online stations (such as Weather Underground), generate regular or
+    random sampling grids from polygons (e.g., shapefiles or KMLs), calculate spatial
+    transformations, and export data in formats suitable for geographic analysis and
+    mapping. Designed to support geospatial workflows and agronomic data analysis.
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
+Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
+Imports:rvest,sf,terra,units,lubridate,dplyr,readr,readxl,httr,xml2,stringr,writexl,tibble

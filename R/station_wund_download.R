@@ -18,17 +18,16 @@
 #' @examples
 #' station_wund_download(c("ICIANO1", "IMANDA28"), "2024-12-01", "2024-12-03")
 #'
+#' @author Santos Henrique Brant Dias
 #' @return Um data.frame com os dados meteorológicos.
 #' @export
-#' @author Santos Henrique Brant Dias
+
 
 #devtools::document()
 
 station_wund_download <- function(stations, start_date, end_date) {
 
   datas <- seq(as.Date(start_date), as.Date(end_date), by = "1 day")
-
-  f=i=1
 
   for (f in 1:length(stations)){
     for (i in 1:length(datas)) {

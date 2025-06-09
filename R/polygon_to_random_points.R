@@ -2,7 +2,6 @@
 #'
 #'@description Função gera um grade pontos regulares para realização de análises, informações geradas a partir arquivo vetorial tipo polígono, que pode ser feito pelo Google Esrth Pro com um arquivo KML.
 #'
-#'
 #'@param dir_polygon Caminho do arquivo do polígono vetorial
 #'@param dist Valor da distancia entre os pontos em metros
 #'@param plot True ou FALSE para ver o plot do arquivo
@@ -18,9 +17,9 @@
 #'polygon_to_random_points(dir_polygon = "./Downloads/Demilitacao_Area.kml",
 #' dist = 100, plot = TRUE)
 #'
-#'@export
-#'@return Returns um arquivo vetorial (ex. KML)
 #'@author Santos Henrique Brant Dias
+#'@return Returns um arquivo vetorial (ex. KML)
+#'@export
 
 polygon_to_random_points <- function(dir_polygon,Npoints,min_dist, plot = FALSE) {
 

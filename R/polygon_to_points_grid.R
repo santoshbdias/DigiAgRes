@@ -17,9 +17,9 @@
 #'polygon_to_points_grid(dir_polygon = "./Downloads/Demilitacao_Area.kml",
 #' dist = 100, plot = TRUE)
 #'
-#'@export
-#'@return Returns um arquivo vetorial (ex. KML)
 #'@author Santos Henrique Brant Dias
+#'@return Returns um arquivo vetorial (ex. KML)
+#'@export
 
 
 polygon_to_points_grid <- function(dir_polygon, dist, plot = FALSE) {

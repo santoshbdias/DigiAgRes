@@ -9,7 +9,6 @@
 #'@import sf
 #'@import stringr
 #'@import terra
-#'@import
 #'@importFrom rvest read_html
 #'@importFrom rvest html_elements
 #'@importFrom rvest html_table
@@ -21,10 +20,11 @@
 #'TopoData_download_to_vector("C:/Users/server_SantosDias/Downloads/Demilitacao_Area.kml",
 #' "C:/Users/server_SantosDias/Downloads")
 #'
-#'@return Raster do TopoData
-#'@export
 #'
 #'@author Santos Henrique Brant Dias
+#'@return Raster do TopoData
+#'@export
+
 
 #rm(list = ls()); gc()
 
