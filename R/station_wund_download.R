@@ -6,15 +6,6 @@
 #' @param start_date Data inicial no formato "YYYY-MM-DD".
 #' @param end_date Data final no formato "YYYY-MM-DD".
 #'
-#' @import dplyr
-#' @import rvest
-#' @importFrom rvest read_html
-#' @importFrom rvest html_elements
-#' @importFrom rvest html_table
-#' @importFrom dplyr %>%
-#' @importFrom dplyr mutate
-#' @importFrom dplyr transmute
-#'
 #' @examples
 #' station_wund_download(c("ICIANO1", "IMANDA28"), "2024-12-01", "2024-12-03")
 #'

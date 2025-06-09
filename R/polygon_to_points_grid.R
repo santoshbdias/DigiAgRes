@@ -6,13 +6,6 @@
 #'@param dist Valor da distancia entre os pontos em metros
 #'@param plot True ou FALSE para ver o plot do arquivo
 #'
-#'@importFrom sf st_read
-#'@importFrom sf st_transform
-#'@importFrom sf st_make_grid
-#'@importFrom sf st_sf
-#'@importFrom sf st_write
-#'@importFrom sf st_read
-#'
 #'@examples
 #'polygon_to_points_grid(dir_polygon = "./Downloads/Demilitacao_Area.kml",
 #' dist = 100, plot = TRUE)

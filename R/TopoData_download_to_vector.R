@@ -5,17 +5,6 @@
 #'@param vector Caminho do arquivo do polígono vetorial
 #'@param pathdow Valor da distancia entre os pontos em metros
 #'
-#'@import dplyr
-#'@import sf
-#'@import stringr
-#'@import terra
-#'@importFrom rvest read_html
-#'@importFrom rvest html_elements
-#'@importFrom rvest html_table
-#'@importFrom dplyr %>%
-#'@importFrom dplyr mutate
-#'@importFrom dplyr transmute
-#'
 #'@examples
 #'TopoData_download_to_vector("C:/Users/server_SantosDias/Downloads/Demilitacao_Area.kml",
 #' "C:/Users/server_SantosDias/Downloads")
@@ -34,8 +23,7 @@
 TopoData_download_to_vector <- function(vector,pathdow){
 
 
-  if(!require("pacman")) install.packages("pacman");pacman::p_load(
-    sf, dplyr, stringr, terra)  # Instalar/ativar pacotes
+  #sf, dplyr, stringr, terra)  # Instalar/ativar pacotes
 
   area <- st_read(vector, quiet = TRUE)
 
