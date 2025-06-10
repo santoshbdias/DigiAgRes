@@ -6,8 +6,21 @@
 #' @param start_date Data inicial no formato "YYYY-MM-DD".
 #' @param end_date Data final no formato "YYYY-MM-DD".
 #'
+#' @import rvest
+#' @import dplyr
+#' @importFrom dplyr mutate
+#' @importFrom dplyr transmute
+#' @importFrom dplyr %>%
+#' @importFrom rvest read_html
+#' @importFrom rvest html_elements
+#' @importFrom rvest html_table
+#'
 #' @examples
-#' station_wund_download(c("ICIANO1", "IMANDA28"), "2024-12-01", "2024-12-03")
+#' \dontrun{
+#' station_wund_download(stations = c("ICIANO1", "IMANDA28"),
+#'                       start_date = "2024-12-01",
+#'                       end_date = "2024-12-03")
+#'}
 #'
 #' @author Santos Henrique Brant Dias
 #' @return Um data.frame com os dados meteorológicos.
@@ -20,32 +33,50 @@ station_wund_download <- function(stations, start_date, end_date) {
 
   datas <- seq(as.Date(start_date), as.Date(end_date), by = "1 day")
 
+  results <- list()
 
-  for (f in 1:length(stations)){
-    for (i in 1:length(datas)) {
+  for (f in seq_along(stations)){
+    for (i in seq_along(datas)) {
 
       link <- paste0("https://www.wunderground.com/dashboard/pws/",stations[f],"/table/",format(datas[i], "%Y-%m-%d"),
                      "/", format(datas[i], "%Y-%m-%d"), '/daily')
 
-      pagina <- rvest::read_html(link)
+      #pagina <- rvest::read_html(link)
+
+        pagina <- tryCatch({
+          rvest::read_html(link)
+        }, error = function(e) {
+          message("❌ Falha ao acessar o link: ", link)
+          message("🔍 Verifique sua conexão com a internet ou bloqueios de firewall/proxy.")
+          return(NULL)
+        })
+        if (is.null(pagina)) next
+
 
       tabelas <- pagina %>% rvest::html_elements("table")
 
-      tabela_dados <- tabelas[[4]] %>% rvest::html_table()
+      #tabela_dados <- tabelas[[4]] %>% rvest::html_table()
+
+      tabela_dados <- tabelas %>%
+        purrr::map(rvest::html_table) %>%
+        purrr::keep(~ all(c("Time", "Temperature") %in% names(.x))) %>%
+        purrr::pluck(1)
 
       vrtt <- data.frame(stations[f],format(datas[i], "%Y-%m-%d"),tabela_dados)
 
       names(vrtt)<-c('Station','Date',"Time","Temperature", "Dew Point", "Humidity", "Wind", "Speed",
                      "Gust", "Pressure", "Precip. Rate.", "Precip. Accum.", "UV", "Solar")
 
-      if(exists('santosT')==T){santosT<-rbind(santosT, vrtt)}else{santosT<-vrtt}
+      #if(exists('santosT')==T){santosT<-rbind(santosT, vrtt)}else{santosT<-vrtt}
 
-      rm(link, pagina,tabelas,tabela_dados,vrtt)
+      results[[length(results) + 1]] <- vrtt
+
+      return(NULL)
     }}
 
-  santosT <- santosT %>%
+  santosT <- dplyr::bind_rows(resultados) %>%
     dplyr::mutate(
-      Temperature = round((as.numeric(str_replace_all(Temperature, "[^0-9\\.]", "")) - 32) * 5/9, 2),  # °C
+      Temperature = round((as.numeric(str_replace_all(Temperature, "[^0-9\\.\\-]", "")) - 32) * 5/9, 2), #°C
       `Dew Point` = round((as.numeric(str_replace_all(`Dew Point`, "[^0-9\\.]", "")) - 32) * 5/9, 2),  # °C
       Humidity = as.numeric(str_replace_all(Humidity, "[^0-9]", "")),                                # %
       Speed = round(as.numeric(str_replace_all(Speed, "[^0-9\\.]", "")) * 0.44704, 2),                # m/s
@@ -72,4 +103,5 @@ station_wund_download <- function(stations, start_date, end_date) {
       `RadiacaoSolar_W_m2` = Solar
     )
 
+  return(santosT)
 }

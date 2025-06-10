@@ -20,7 +20,11 @@ Um data.frame com os dados meteorológicos.
 Função faz o download de dados meteorológicos wunderground.
 }
 \examples{
-station_wund_download(c("ICIANO1", "IMANDA28"), "2024-12-01", "2024-12-03")
+\dontrun{
+station_wund_download(stations = c("ICIANO1", "IMANDA28"),
+                      start_date = "2024-12-01",
+                      end_date = "2024-12-03")
+}
 
 }
 \author{

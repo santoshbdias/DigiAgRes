@@ -1,19 +1,42 @@
+---
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
 # 📦 DigiAgRes
 
-**DigiAgRes** é uma abreviação de **Digital Argiculture Research**, pacote R voltado para o processamento de dados espaciais e meteorológicos, como a geração de grades de pontos em áreas agrícolas, integração com dados externos como o Wunderground e shapefiles geográficos. Ele oferece ferramentas simples e práticas para pesquisadores em agricultura digital.
+**DigiAgRes** é uma abreviação de **Digital Argiculture Research**,
+pacote R para facilitar operações recorrentes no contexto da agricultura
+digital, da pesquisa do manejo e conservação do solo e da água, como o
+download de dados climáticos e a geração de grids amostrais a partir de
+polígonos. Ele oferece ferramentas simples e práticas para pesquisadores
+em agricultura digital.
 
-----
+------------------------------------------------------------------------
 
 ## 🚀 Instalação dos softwares
-Antes de tudo, instale o **R** e o **RStudio**:
-- 📥 Baixe e instale o R: [https://cran.r-project.org/](https://cran.r-project.org/)
-- 💻 Baixe e instale o RStudio: [https://posit.co/download/rstudio-desktop/](https://posit.co/download/rstudio-desktop/)
 
-----
+Antes de tudo, instale o **R** e o **RStudio**:
+
+Antes de utilizar o pacote, certifique-se de que você tem o **R** e o **RStudio** instalados:
+
+- 📥**R (CRAN):**  
+  Acesse [https://cran.r-project.org](https://cran.r-project.org) e baixe a versão mais recente do R para seu sistema operacional (Windows, Mac ou Linux).
+
+- 💻 **RStudio (IDE recomendada):**  
+  Acesse [https://posit.co/download/rstudio-desktop/](https://posit.co/download/rstudio-desktop/) e baixe o RStudio Desktop gratuito.
+
+---
+
+
+------------------------------------------------------------------------
 
 ## 💻 Instalação do pacote
+
 Depois de instalar os softwares na sequência, instale o pacote com:
-```r
+
+``` r
 # Instale devtools se ainda não tiver
 install.packages("devtools")
 
@@ -21,11 +44,17 @@ install.packages("devtools")
 devtools::install_github("santoshbdias/DigiAgRes")
 ```
 
----
+------------------------------------------------------------------------
 
 ## 📚 Funcionalidades
-### 1. Baixar dados meteorológicos Wunderground
-```r
+
+### 1.📥 Download de dados meteorológicos da Weather Underground
+
+Utilize a função ***station_wund_download()*** para baixar dados
+horários de estações meteorológicas pessoais (PWS) da rede Weather
+Underground:
+
+``` r
 library(DigiAgRes)
 
 dados <- station_wund_download(
@@ -38,8 +67,13 @@ dados <- station_wund_download(
 readr::write_csv(dados, "C:/Users/SantosDias/Documents/dados_wunderground.csv") #Altere aqui o caminho para o seu computador
 writexl::write_xlsx(dados, "C:/Users/SantosDias/Documents/dados_wunderground.xlsx")#Altere aqui o caminho para o seu computador
 ```
-### 2. Gerar grade regular de pontos a partir de um polígono .kml
-```r
+Retorna um data.frame contendo temperatura, umidade, velocidade do vento, radiação solar, entre outras variáveis no sistema internacional de unidades.
+
+### 2.🗺️ Gerar grade regular de pontos a partir de um polígono 
+
+A função polygon_to_points_grid() permite criar um grid regular de pontos centrados dentro de um polígono (ex: área experimental ou talhão agrícola).
+
+``` r
 grid_points <- polygon_to_points_grid(
   dir_polygon = "C:/Users/SantosDias/Documents/outra_area.kml",#Altere aqui o caminho para o seu computador
   dist = 100,
@@ -50,8 +84,13 @@ grid_points <- polygon_to_points_grid(
 sf::st_write(grid_points, "C:/Users/SantosDias/Documents/grid_regular_pontos.kml",#Altere aqui o caminho para o seu computador
              driver = "KML", append = FALSE)
 ```
-### 3. Gerar pontos aleatórios dentro de uma área
-```r
+O sistema de coordenadas do KML é convertido automaticamente para UTM com base no centróide do polígono.
+
+### 3.🌱 Geração de pontos aleatórios com distância mínima
+
+Essa função permitirá gerar pontos aleatórios dentro de um polígono, respeitando uma distância mínima entre eles (útil para amostragem espacial).
+
+``` r
 
 random_points <- polygon_to_random_points(
   dir_polygon = "C:/Users/SantosDias/Documents/outra_area.kml",#Altere aqui o caminho para o seu computador
@@ -63,8 +102,10 @@ random_points <- polygon_to_random_points(
 # Exportar para shapefile
 sf::st_write(random_points, "C:/Users/SantosDias/Documents/pontos_aleatorios.shp", append = FALSE)
 ```
+
 ### 4. Baixar dados do modelo Topodata para um vetor
-```r
+
+``` r
 
 TopoData_download_to_vector(
   area_kml = "Caminho/para/area.kml",
@@ -72,15 +113,20 @@ TopoData_download_to_vector(
   path_out = "Caminho/saida/"
 )
 ```
----
 
-## 👨‍💻 Autor</p>
+------------------------------------------------------------------------
 
-Desenvolvido por Prof. Dr. Santos Henrique Brant Dias</p>
-Para mais informações: [https://www.santoshbdias.com.br/](https://www.santoshbdias.com.br/)</p>
-E-mail: santoshbdias@gmail.com
----
 
-##  📄 Licença</p>
+## 👨‍💻 Autor
+
+Desenvolvido pelo Prof. Dr. Santos Henrique Brant Dias<br> 
+Pesquisador Agricultura Digital no Manejo e Conservação do Solo e da Água<br> 
+
+Para mais informações: <https://www.santoshbdias.com.br/><br>
+
+E-mail: [santoshbdias@gmail.com](mailto:santoshbdias@gmail.com){.email}<br>
+
+
+## 📄 Licença
+
 Este pacote está licenciado sob a MIT License.
-
