@@ -43,14 +43,14 @@ station_wund_download <- function(stations, start_date, end_date) {
 
       #pagina <- rvest::read_html(link)
 
-        pagina <- tryCatch({
-          rvest::read_html(link)
-        }, error = function(e) {
-          message("❌ Falha ao acessar o link: ", link)
-          message("🔍 Verifique sua conexão com a internet ou bloqueios de firewall/proxy.")
-          return(NULL)
-        })
-        if (is.null(pagina)) next
+      pagina <- tryCatch({
+        rvest::read_html(link)
+      }, error = function(e) {
+        message("❌ Falha ao acessar o link: ", link)
+        message("🔍 Verifique sua conexão com a internet ou bloqueios de firewall/proxy.")
+        return(NULL)
+      })
+      if (is.null(pagina)) next
 
 
       tabelas <- pagina %>% rvest::html_elements("table")
