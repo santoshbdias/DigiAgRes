@@ -62,6 +62,7 @@ writexl::write_xlsx(dados, "C:/Users/SantosDias/Documents/dados_wunderground.xls
 Retorna um data.frame contendo temperatura, umidade, velocidade do vento, radiação solar, entre outras variáveis no sistema internacional de unidades.
 
 
+
 ### 2.🗺️ Gerar grade regular de pontos a partir de um polígono 
 
 A função polygon_to_points_grid() permite criar um grid regular de pontos centrados dentro de um polígono (ex: área experimental ou talhão agrícola).
@@ -80,6 +81,7 @@ sf::st_write(grid_points, "C:/Users/SantosDias/Documents/grid_regular_pontos.kml
 O sistema de coordenadas do KML é convertido automaticamente para UTM com base no centróide do polígono.
 
 
+
 ### 3.🌱 Geração de pontos aleatórios com distância mínima
 
 Essa função permitirá gerar pontos aleatórios dentro de um polígono, respeitando uma distância mínima entre eles (útil para amostragem espacial).
@@ -96,6 +98,7 @@ random_points <- polygon_to_random_points(
 # Exportar para shapefile
 sf::st_write(random_points, "C:/Users/SantosDias/Documents/pontos_aleatorios.shp", append = FALSE)
 ```
+
 
 
 ### 4. Baixar dados do modelo Topodata para um vetor
@@ -119,4 +122,3 @@ Pesquisador Agricultura Digital no Manejo e Conservação do Solo e da Água<br>
 
 Para mais informações: <https://www.santoshbdias.com.br/><br>
 
-E-mail: [santoshbdias@gmail.com](mailto:santoshbdias@gmail.com){.email}<br>

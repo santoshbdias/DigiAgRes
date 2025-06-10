@@ -8,6 +8,9 @@
 #'
 #' @import rvest
 #' @import dplyr
+#' @import stringr
+#' @import lubridate
+#'
 #' @importFrom dplyr mutate
 #' @importFrom dplyr transmute
 #' @importFrom dplyr %>%
@@ -32,8 +35,6 @@
 station_wund_download <- function(stations, start_date, end_date) {
 
   datas <- seq(as.Date(start_date), as.Date(end_date), by = "1 day")
-
-  results <- list()
 
   for (f in seq_along(stations)){
     for (i in seq_along(datas)) {
@@ -64,44 +65,42 @@ station_wund_download <- function(stations, start_date, end_date) {
 
       vrtt <- data.frame(stations[f],format(datas[i], "%Y-%m-%d"),tabela_dados)
 
-      names(vrtt)<-c('Station','Date',"Time","Temperature", "Dew Point", "Humidity", "Wind", "Speed",
-                     "Gust", "Pressure", "Precip. Rate.", "Precip. Accum.", "UV", "Solar")
+      names(vrtt)<-c('Station','Date',"Time","Temperature", "DewPoint", "Humidity", "Wind", "Speed",
+                     "Gust", "Pressure", "PrecipRate", "PrecipAccum", "UV", "Solar")
 
-      #if(exists('santosT')==T){santosT<-rbind(santosT, vrtt)}else{santosT<-vrtt}
+      if(exists('santosdias')==T){santosdias<-rbind(santosdias, vrtt)}else{santosdias<-vrtt}
 
-      results[[length(results) + 1]] <- vrtt
-
-      return(NULL)
     }}
 
-  santosT <- dplyr::bind_rows(resultados) %>%
-    dplyr::mutate(
-      Temperature = round((as.numeric(str_replace_all(Temperature, "[^0-9\\.\\-]", "")) - 32) * 5/9, 2), #°C
-      `Dew Point` = round((as.numeric(str_replace_all(`Dew Point`, "[^0-9\\.]", "")) - 32) * 5/9, 2),  # °C
-      Humidity = as.numeric(str_replace_all(Humidity, "[^0-9]", "")),                                # %
-      Speed = round(as.numeric(str_replace_all(Speed, "[^0-9\\.]", "")) * 0.44704, 2),                # m/s
-      Gust = round(as.numeric(str_replace_all(Gust, "[^0-9\\.]", "")) * 0.44704, 2),                  # m/s
-      Pressure = round(as.numeric(str_replace_all(Pressure, "[^0-9\\.]", "")) * 33.8639, 2),          # hPa
-      `Precip. Rate.` = round(as.numeric(str_replace_all(`Precip. Rate.`, "[^0-9\\.]", "")) * 25.4, 2),     # mm/h
-      `Precip. Accum.` = round(as.numeric(str_replace_all(`Precip. Accum.`, "[^0-9\\.]", "")) * 25.4, 2),   # mm
-      Solar = as.numeric(str_extract(Solar, "\\d+"))  # w/m²
-    ) %>%
-    dplyr::transmute(
+  santosdias <- mutate(santosdias,
+      Temperature = round((as.numeric(str_replace_all(Temperature, "[^0-9\\.]", "")) - 32) * 5/9, 2),
+      DewPoint = round((as.numeric(str_replace_all(DewPoint, "[^0-9\\.]", "")) - 32) * 5/9, 2),
+      Humidity = as.numeric(str_replace_all(Humidity, "[^0-9]", "")),
+      Speed = round(as.numeric(str_replace_all(Speed, "[^0-9\\.]", "")) * 0.44704, 2),
+      Gust = round(as.numeric(str_replace_all(Gust, "[^0-9\\.]", "")) * 0.44704, 2),
+      Pressure = round(as.numeric(str_replace_all(Pressure, "[^0-9\\.]", "")) * 33.8639, 2),
+      PrecipRate = round(as.numeric(str_replace_all(PrecipRate, "[^0-9\\.]", "")) * 25.4, 2),
+      PrecipAccum = round(as.numeric(str_replace_all(PrecipAccum, "[^0-9\\.]", "")) * 25.4, 2),
+      Solar = as.numeric(str_extract(Solar, "\\d+")),
+      Hora_24h = format(strptime(Time, format = "%I:%M %p"), "%H:%M"),
+      DataHora = as.POSIXct(paste(Date, Hora_24h), format = "%Y-%m-%d %H:%M"))
+
+  santosdias <- transmute(santosdias,
       Estacao = Station,
       Data = Date,
-      Hora = Time,
+      Hora = Hora_24h,
+      DataHora,
       `Temperatura_°C` = Temperature,
-      `PontoOrvalho_°C` = `Dew Point`,
+      `PontoOrvalho_°C` = DewPoint,
       `Umidade_%` = Humidity,
       DirecaoVento = Wind,
-      `VelocidadeVento_m_s` = Speed,
-      `RajadaVento_m_s` = Gust,
-      `Pressao_hPa` = Pressure,
-      `PrecipitacaoTaxa_mm_h` = `Precip. Rate.`,
-      `PrecipitacaoAcumulada_mm` = `Precip. Accum.`,
-      UV = UV,
-      `RadiacaoSolar_W_m2` = Solar
-    )
+      VelocidadeVento_m_s = Speed,
+      RajadaVento_m_s = Gust,
+      Pressao_hPa = Pressure,
+      PrecipitacaoTaxa_mm_h = PrecipRate,
+      PrecipitacaoAcumulada_mm = PrecipAccum,
+      UV,
+      RadiacaoSolar_W_m2 = Solar)
 
-  return(santosT)
+  return(santosdias)
 }
