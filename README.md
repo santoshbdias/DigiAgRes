@@ -48,12 +48,26 @@ Underground:
 
 ``` r
 library(DigiAgRes)
+library(ggplot2)
 
 dados <- station_wund_download(
-  stations = c("ICIANO1", "IMANDA28"),
-  start_date = "2024-12-01",
-  end_date = "2024-12-03"
+  stations = 'IPARANAM3',
+  start_date = "2025-06-01",
+  end_date = "2025-06-03"
 )
+
+# Explorando gráficamente os dados
+
+ggplot(df, aes(x = DataHora, y = `Temperatura_°C`)) +
+  geom_line(color = "firebrick") +
+  labs(title = "Temperatura ao longo do tempo",
+       x = "Data e Hora", y = "Temperatura (°C)") +
+  theme_minimal()
+
+
+
+
+
 
 # Exportar para CSV e/ou Excel
 readr::write_csv(dados, "C:/Users/SantosDias/Documents/dados_wunderground.csv") #Altere aqui o caminho para o seu computador

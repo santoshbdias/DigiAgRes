@@ -62,7 +62,10 @@ station_wund_download <- function(stations, start_date, end_date) {
                      "Gust", "Pressure", "PrecipRate", "PrecipAccum", "UV", "Solar")
 
       if(exists('santosdias')==T){santosdias<-rbind(santosdias, vrtt)}else{santosdias<-vrtt}
-    }
+
+      message("🔄 Coletado dados da estação: ", stations[i], " - Dia: ", datas[f])
+
+      }
     }
 
   santosdias <- dplyr::mutate(santosdias,
@@ -84,9 +87,9 @@ station_wund_download <- function(stations, start_date, end_date) {
       Data = Date,
       Hora = Hora_24h,
       DataHora,
-      `Temperatura_°C` = Temperature,
-      `PontoOrvalho_°C` = DewPoint,
-      `Umidade_%` = Humidity,
+      Temperatura_C = Temperature,
+      PontoOrvalho_C = DewPoint,
+      Umidade = Humidity,
       DirecaoVento = Wind,
       VelocidadeVento_m_s = Speed,
       RajadaVento_m_s = Gust,
