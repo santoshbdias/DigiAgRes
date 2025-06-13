@@ -25,7 +25,7 @@ e apresenta a umidade relativa em eixo secundário.
 \dontrun{
 plot_clima_estacao(df,
                    estacao = "IPARANAM3",
-                   datas = c("2025-06-10","2025-06-11","2025-06-12"))
+                   datas = c("2025-06-11","2025-06-12"))
 }
 
 }

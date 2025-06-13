@@ -40,7 +40,7 @@ devtools::install_github("santoshbdias/DigiAgRes")
 
 ## 📚 Funcionalidades
 
-### 1.📥 Download de dados meteorológicos da Weather Underground
+### 1.📥 Download e plot de dados meteorológicos da Weather Underground
 
 Utilize a função ***station_wund_download()*** para baixar dados
 horários de estações meteorológicas pessoais (PWS) da rede Weather
@@ -53,20 +53,13 @@ library(ggplot2)
 dados <- station_wund_download(
   stations = 'IPARANAM3',
   start_date = "2025-06-01",
-  end_date = "2025-06-03"
+  end_date = "2025-06-12"
 )
 
+
 # Explorando gráficamente os dados
-
-ggplot(df, aes(x = DataHora, y = `Temperatura_°C`)) +
-  geom_line(color = "firebrick") +
-  labs(title = "Temperatura ao longo do tempo",
-       x = "Data e Hora", y = "Temperatura (°C)") +
-  theme_minimal()
-
-
-
-
+plot_clima_estacao(df,estacao = "IPARANAM3",
+                   datas = c("2025-06-11","2025-06-12"))
 
 
 # Exportar para CSV e/ou Excel

@@ -30,7 +30,6 @@
 #' @export
 
 
-#devtools::document()
 
 station_wund_download <- function(stations, start_date, end_date) {
 
