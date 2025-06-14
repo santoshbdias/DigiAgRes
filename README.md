@@ -112,7 +112,7 @@ A função polygon_to_points_grid() permite criar um grid regular de pontos cent
 ``` r
 grid_points <- polygon_to_points_grid(
   dir_polygon = "C:/Users/SantosDias/Documents/outra_area.kml",#Altere aqui o caminho para o seu computador
-  dist = 100,
+  dist = 100, #Distância entre os pontos, para 1 ponto por ha (dist=100)
   plot = TRUE
 )
 
@@ -132,8 +132,8 @@ Essa função permitirá gerar pontos aleatórios dentro de um polígono, respei
 
 random_points <- polygon_to_random_points(
   dir_polygon = "C:/Users/SantosDias/Documents/outra_area.kml",#Altere aqui o caminho para o seu computador
-  n = 50,
-  min_dist = 30,
+  n = 50, #Número de pontos para plotar na área
+  min_dist = 30, #Distância mínima entre os pontos
   plot = TRUE
 )
 
