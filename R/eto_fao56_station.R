@@ -7,14 +7,10 @@
 #'
 #' A altitude (z) e a latitude (lat) da estação devem ser fornecidas como valores únicos ou vetores nomeados com os nomes das estações.
 #'
-#' @param df Dataframe com dados meteorológicos horários, contendo ao menos as colunas:
-#' `Estacao`, `DataHora`, `Temperatura_C`, `PontoOrvalho_C`, `RadiacaoSolar_W_m2`,
-#' `VelocidadeVento_m_s` e `Pressao_hPa`.
-#' @param z Altitude da estação em metros. Pode ser um valor único (para todas as estações) ou
-#' um vetor nomeado com os nomes das estações como `c("EST1" = 650, "EST2" = 780)`.
-#' @param lat Latitude da estação em graus decimais. Pode ser um valor único ou um vetor nomeado, como em `z`.
+#' @param df Dataframe com dados meteorológicos horários.
+#' @param estacao Nome da estação desejada (ex: "ICIANO1").
 #'
-#' @return Um data.frame contendo a ETo diária por estação e por data, com colunas: `Estacao`, `Data`, `ETo_mm_dia`.
+#' @return Um data.frame contendo a ETo diária por estação e por data.
 #'
 #' @details
 #' A equação de Penman-Monteith requer dados médios diários de temperatura, pressão atmosférica,
@@ -26,31 +22,28 @@
 #'
 #' @examples
 #' \dontrun{
-#' eto_df <- calcular_eto_fao56(df, z = 600, lat = -23.4)
+#' eto_df <- eto_fao56_station(df, estacao='ICIANO1')
 #' }
 #'
 #' @author Santos Henrique Brant Dias
 #' @export
 
-z = 550
-lat = -23.34
+eto_fao56_station <- function(df,estacao) {
 
-eto_fao56_station <- function(df, z, lat) {
-  library(dplyr)
-  library(lubridate)
+  df_filtrado <- df[df$Estacao == estacao, ]
 
   # Constantes
   Gsc <- 0.0820  # MJ m-2 min-1
   sigma <- 4.903e-9  # MJ K-4 m-2 dia-1
 
-  df <- df %>%
+  df_filtrado <- df %>%
     mutate(Data = as.Date(Data),
            T = Temperatura_C,
            u2 = VelocidadeVento_m_s,
            RH = Umidade,
            Rs = RadiacaoSolar_W_m2 * 0.0864 / 1e3)  # Converter W/m2 para MJ/m2/dia (aproximadamente)
 
-  df_resumo <- df %>%
+  df_resumo <- df_filtrado %>%
     group_by(Estacao, Data) %>%
     summarise(
       Tmean = mean(T, na.rm = TRUE),
@@ -69,8 +62,8 @@ eto_fao56_station <- function(df, z, lat) {
   df_resumo2 <- df_resumo %>%
     rowwise() %>%
     mutate(
-      z_est = ifelse(length(z) > 1, z[Estacao], z),
-      lat_est = ifelse(length(lat) > 1, lat[Estacao], lat),
+      z_est = df[2,2],
+      lat_est = df[2,3],
       J = yday(Data),#as.numeric(format(Data, "%j")), # Dia Juliano
       P = 101.3 * (((293 - 0.0065 * z_est) / 293)^5.26),
       gamma = 0.000665 * Patm,
@@ -106,5 +99,5 @@ eto_fao56_station <- function(df, z, lat) {
     ) %>%
     select(Estacao, Data, ETo, ETo2, Chuva)
 
-  return(df_resumo)
+  return(df_resumo2)
 }

@@ -20,4 +20,4 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
-Imports:rvest,sf,terra,units,lubridate,dplyr,readr,readxl,httr,xml2,stringr,writexl,tibble,ggplot2
+Imports:rvest,sf,terra,units,lubridate,dplyr,readr,readxl,httr,xml2,stringr,writexl,tibble,ggplot2,emayili

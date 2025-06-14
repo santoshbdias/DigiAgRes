@@ -47,8 +47,10 @@ horários de estações meteorológicas pessoais (PWS) da rede Weather
 Underground:
 
 ``` r
+#Comandos para limpar completamente o R, tudo aberto e o que já rodou.
+rm(list = ls()); gc(); graphics.off(); cat("\014")# Atalho equivalente a Ctrl+L
+
 library(DigiAgRes)
-library(ggplot2)
 
 dados <- station_wund_download(
   stations = 'IPARANAM3',
@@ -58,7 +60,7 @@ dados <- station_wund_download(
 
 
 # Explorando gráficamente os dados
-plot_clima_estacao(df,estacao = "IPARANAM3",
+plot_clima_estacao(dados, estacao = "IPARANAM3",
                    datas = c("2025-06-11","2025-06-12"))
 
 
@@ -70,7 +72,47 @@ Retorna um data.frame contendo temperatura, umidade, velocidade do vento, radia�
 
 
 
-### 2.🗺️ Gerar grade regular de pontos a partir de um polígono 
+### 2.💧 Cálculo da Evapotranspiração de Referência (ETo) diária — FAO 56
+A função *calc_eto_fao56()* realiza o cálculo da evapotranspiração de referência (ETo) diária utilizando o método de Penman-Monteith proposto pela FAO (FAO 56). A função opera sobre os dados horários baixados com station_wund_download() e agrega os valores por estação e por dia.
+
+É necessário informar a altitude e a latitude da estação, que podem ser passadas como valores únicos ou vetores nomeados para múltiplas estações.
+
+```r
+#Comandos para limpar completamente o R, tudo aberto e o que já rodou.
+rm(list = ls()); gc(); graphics.off(); cat("\014")# Atalho equivalente a Ctrl+L
+
+library(DigiAgRes)
+
+dados <- station_wund_download(
+  stations = 'IPARANAM3',
+  start_date = "2025-06-01",
+  end_date = "2025-06-12"
+)
+
+# Calcular ETo diária para uma estação
+eto <- calc_eto_fao56(df = dados,
+                      z = 500,              # Altitude da estação em metros
+                      lat = -23.44)         # Latitude em graus decimais
+
+# Para mais de uma estação, utilize vetores nomeados:
+eto <- calc_eto_fao56(df = dados,
+                      z = c(IPARANAM3 = 580, ICIANO1 = 520),
+                      lat = c(IPARANAM3 = -23.44, ICIANO1 = -23.51))
+
+# Visualizar os resultados
+head(eto)
+```
+
+
+A função retorna um data.frame com as seguintes colunas:<br>
+Estacao: nome da estação meteorológica;<br>
+Data: data de referência (agregada por dia);<br>
+ETo_FAO56: valor da evapotranspiração de referência (em mm/dia).<br>
+Essa métrica é essencial para o manejo hídrico e o cálculo das necessidades de irrigação em diferentes culturas agrícolas.<br>
+
+
+
+### 3.🗺️ Gerar grade regular de pontos a partir de um polígono 
 
 A função polygon_to_points_grid() permite criar um grid regular de pontos centrados dentro de um polígono (ex: área experimental ou talhão agrícola).
 
@@ -89,7 +131,7 @@ O sistema de coordenadas do KML é convertido automaticamente para UTM com base 
 
 
 
-### 3.🌱 Geração de pontos aleatórios com distância mínima
+### 4.🌱 Geração de pontos aleatórios com distância mínima
 
 Essa função permitirá gerar pontos aleatórios dentro de um polígono, respeitando uma distância mínima entre eles (útil para amostragem espacial).
 
@@ -108,7 +150,7 @@ sf::st_write(random_points, "C:/Users/SantosDias/Documents/pontos_aleatorios.shp
 
 
 
-### 4. Baixar dados do modelo Topodata para um vetor
+### 5. Baixar dados do modelo Topodata para um vetor
 
 ``` r
 
@@ -118,6 +160,40 @@ TopoData_download_to_vector(
   path_out = "Caminho/saida/"
 )
 ```
+
+### 6.🌧️ Análise automática de radar meteorológico e envio de alertas
+O DigiAgRes permite baixar a imagem mais recente do radar meteorológico do Simepar, analisar a presença de chuva em uma região de interesse (com base na cor da imagem) e enviar alertas por e-mail sempre que uma condição meteorológica for detectada. Isso pode ser automatizado com um loop que roda a cada 10 minutos.
+
+🔄 Exemplo: executar automaticamente a cada 10 minutos
+
+``` r
+library(DigiAgRes)
+
+repeat {
+  cat(format(Sys.time(), "%H:%M"), "- Executando função...\n")
+
+  # Baixa a imagem mais recente do radar meteorológico do PR
+  img <- baixar_radar_PR()
+
+  # Analisa a imagem para a região de Cianorte
+  resul <- analisar_radar_PR(img, mega = "Cianorte", raio = 55)
+
+  # Envia e-mail de alerta caso a condição detectada seja "Sem chuvas"
+  if (resul == "Chuva forte (vermelho)" || resul == "Chuva leve (amarelo)") {
+    enviar_email_alerta(
+      from_email = "seuemail@gmail.com",
+      to_email = "destino@gmail.com",
+      senha_app = "sua_senha_de_app_aqui"
+      corpo_mensagem = paste("🚨 Alerta:", resul)
+    )
+  }
+
+  # Espera 10 minutos (600 segundos) para a próxima execução
+  Sys.sleep(600)
+}
+``` 
+
+
 
 ------------------------------------------------------------------------
 
