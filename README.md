@@ -157,8 +157,6 @@ TopoData_download_to_vector(
 ### 6.🌧️ Análise automática de radar meteorológico e envio de alertas
 O DigiAgRes permite baixar a imagem mais recente do radar meteorológico do Simepar, analisar a presença de chuva em uma região de interesse (com base na cor da imagem) e enviar alertas por e-mail sempre que uma condição meteorológica for detectada. Isso pode ser automatizado com um loop que roda a cada 10 minutos.
 
-🔄 Exemplo: executar automaticamente a cada 10 minutos
-
 ``` r
 library(DigiAgRes)
 
