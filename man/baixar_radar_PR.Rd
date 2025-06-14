@@ -7,7 +7,7 @@
 baixar_radar_PR()
 }
 \value{
-Uma imagem (magick-image) contendo o radar meteorológico atual do estado do Paraná.
+Uma imagem (\code{magick-image}) contendo o radar meteorológico atual do estado do Paraná.
 }
 \description{
 Esta função acessa a imagem mais recente do radar do Paraná disponibilizada pelo Simepar e retorna uma imagem tipo magick.

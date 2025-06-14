@@ -12,7 +12,7 @@ enviar_email_alerta(
 )
 }
 \arguments{
-\item{from_email}{Endereço de e-mail do remetente (ex: "seuemail").}
+\item{from_email}{Endereço de e-mail do remetente (ex: "seuemail@gmail.com").}
 
 \item{to_email}{Endereço de e-mail do destinatário.}
 
