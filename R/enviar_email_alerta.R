@@ -2,7 +2,7 @@
 #'
 #' @description Envia uma mensagem de alerta meteorológico por e-mail usando servidor SMTP autenticado (Gmail). Atenção: essa senha deve ser uma senha de aplicativo,gerada em https://myaccount.google.com/apppasswords
 #'
-#' @param from_email Endereço de e-mail do remetente (ex: "seuemail").
+#' @param from_email Endereço de e-mail do remetente (ex: "seuemail@gmail.com").
 #' @param to_email Endereço de e-mail do destinatário.
 #' @param senha_app Senha de aplicativo do Gmail (não é a senha normal). #Gere em: https://myaccount.google.com/apppasswords.
 #' @param corpo_mensagem Texto da mensagem (default: "🚨 Alerta de chuva detectada!").

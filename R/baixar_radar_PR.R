@@ -2,7 +2,7 @@
 #'
 #' @description Esta função acessa a imagem mais recente do radar do Paraná disponibilizada pelo Simepar e retorna uma imagem tipo magick.
 #'
-#' @return Uma imagem (magick-image) contendo o radar meteorológico atual do estado do Paraná.
+#' @return Uma imagem (`magick-image`) contendo o radar meteorológico atual do estado do Paraná.
 #' @import httr
 #' @import magick
 #'
