@@ -21,15 +21,13 @@
 #' @examples
 #' \dontrun{
 #' station_wund_download(stations = c("ICIANO1", "IMANDA28"),
-#'                       start_date = "2024-12-01",
-#'                       end_date = "2024-12-03")
+#'                       start_date = "2025-06-10",
+#'                       end_date = "2025-06-14")
 #'}
 #'
 #' @author Santos Henrique Brant Dias
 #' @return Um data.frame com os dados meteorológicos.
 #' @export
-
-
 
 station_wund_download <- function(stations, start_date, end_date) {
 
@@ -43,6 +41,19 @@ station_wund_download <- function(stations, start_date, end_date) {
 
       pagina <- rvest::read_html(link)
 
+      #Dados estações
+      metadados <- pagina %>%
+        html_element(".station-header") %>% html_text2()
+
+      vals <- str_match(metadados,
+                        "Elev\\s+(\\d+)\\s+ft,\\s+([0-9\\.]+)\\s*°([NS]),\\s+([0-9\\.]+)\\s*°([EW])")
+
+      elev_m    <- as.numeric(vals[,2]) * 0.3048
+      lat_dec   <- as.numeric(vals[,3]) * ifelse(vals[,4]=="S", -1, 1)
+      long_dec  <- as.numeric(vals[,5]) * ifelse(vals[,6]=="W", -1, 1)
+
+      #Dados tabela
+
       tabelas <- rvest::html_elements(pagina, "table")
 
       #tabela_dados <- tabelas[[4]] %>% rvest::html_table()
@@ -55,14 +66,15 @@ station_wund_download <- function(stations, start_date, end_date) {
 
       tabela_dados <- purrr::pluck(tabelas_filtradas, 1)
 
-      vrtt <- data.frame(stations[i],format(datas[f], "%Y-%m-%d"),tabela_dados)
+      vrtt <- data.frame(stations[i],elev_m, lat_dec, long_dec,
+                         format(datas[f], "%Y-%m-%d"), tabela_dados)
 
-      names(vrtt)<-c('Station','Date',"Time","Temperature", "DewPoint", "Humidity", "Wind", "Speed",
+      names(vrtt)<-c('Station','Altitude','Latitude','Longitude','Date', "Time","Temperature", "DewPoint", "Humidity", "Wind", "Speed",
                      "Gust", "Pressure", "PrecipRate", "PrecipAccum", "UV", "Solar")
 
       if(exists('santosdias')==T){santosdias<-rbind(santosdias, vrtt)}else{santosdias<-vrtt}
 
-      message("🔄 Coletado dados da estação: ", stations[i], " - Dia: ", datas[f])
+      message("✅ Coletado dados da estação: ", stations[i], " - Dia: ", datas[f])
 
       }
     }
@@ -83,6 +95,9 @@ station_wund_download <- function(stations, start_date, end_date) {
 
   santosdias <- transmute(santosdias,
       Estacao = Station,
+      Altitude,
+      Latitude,
+      Longitude,
       Data = Date,
       Hora = Hora_24h,
       DataHora,

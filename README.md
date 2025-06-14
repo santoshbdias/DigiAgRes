@@ -90,14 +90,7 @@ dados <- station_wund_download(
 )
 
 # Calcular ETo diária para uma estação
-eto <- calc_eto_fao56(df = dados,
-                      z = 500,              # Altitude da estação em metros
-                      lat = -23.44)         # Latitude em graus decimais
-
-# Para mais de uma estação, utilize vetores nomeados:
-eto <- calc_eto_fao56(df = dados,
-                      z = c(IPARANAM3 = 580, ICIANO1 = 520),
-                      lat = c(IPARANAM3 = -23.44, ICIANO1 = -23.51))
+eto_df <- eto_fao56_station(dados, estacao="IPARANAM3")
 
 # Visualizar os resultados
 head(eto)

@@ -22,8 +22,8 @@ Função faz o download de dados meteorológicos wunderground.
 \examples{
 \dontrun{
 station_wund_download(stations = c("ICIANO1", "IMANDA28"),
-                      start_date = "2024-12-01",
-                      end_date = "2024-12-03")
+                      start_date = "2025-06-10",
+                      end_date = "2025-06-14")
 }
 
 }
