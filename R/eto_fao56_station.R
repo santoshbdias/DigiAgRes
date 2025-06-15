@@ -22,7 +22,7 @@
 #'
 #' @examples
 #' \dontrun{
-#' eto_df <- eto_fao56_station(df, estacao='ICIANO1')
+#' eto_df <- eto_fao56_station(df, estacao='IPARANAM3')
 #' }
 #'
 #' @author Santos Henrique Brant Dias
@@ -36,12 +36,12 @@ eto_fao56_station <- function(df,estacao) {
   Gsc <- 0.0820  # MJ m-2 min-1
   sigma <- 4.903e-9  # MJ K-4 m-2 dia-1
 
-  df_filtrado <- df %>%
+  df_filtrado <- df_filtrado %>%
     mutate(Data = as.Date(Data),
            T = Temperatura_C,
            u2 = VelocidadeVento_m_s,
            RH = Umidade,
-           Rs = RadiacaoSolar_W_m2 * 0.0864 / 1e3)  # Converter W/m2 para MJ/m2/dia (aproximadamente)
+           Rs = RadiacaoSolar_W_m2)  # Converter W/m2 para MJ/m2/dia (aproximadamente)
 
   df_resumo <- df_filtrado %>%
     group_by(Estacao, Data) %>%
@@ -64,7 +64,8 @@ eto_fao56_station <- function(df,estacao) {
     mutate(
       z_est = df[2,2],
       lat_est = df[2,3],
-      J = yday(Data),#as.numeric(format(Data, "%j")), # Dia Juliano
+      Rs = Rs * 300/1000000, # 300 é o tempo em segundos e 100000 a conversão de J para MJ
+      J = as.numeric(format(Data, "%j")), # Dia Juliano
       P = 101.3 * (((293 - 0.0065 * z_est) / 293)^5.26),
       gamma = 0.000665 * Patm,
       delta = 4098 * (0.6108 * exp((17.27 * Tmean) / (Tmean + 237.3))) / (Tmean + 237.3)^2,
@@ -78,26 +79,31 @@ eto_fao56_station <- function(df,estacao) {
       e_tmin = 0.6108 * exp(17.27 * Tmin / (Tmin + 237.3)), # e_tmin (kPa)
       es2 = (e_tmax + e_tmin) / 2,
 
-      ea = (e_tmin * (RHmax / 100) + e_tmax * (RHmin / 100)) / 2,
+      ea2 = (e_tmin * (RHmax / 100) + e_tmax * (RHmin / 100)) / 2,
 
 
-      #ea = es * RHmean / 100,
+      ea = es * RHmean / 100,
       dr = 1 + 0.033 * cos(2 * pi * J / 365),
-      delta_s = 0.409 * sin(2 * pi * J / 365 - 1.39),
+      delta_s = 0.409 * sin((2 * pi * J / 365) - 1.39),
+      solar_decli  = 0.409 * sin((2 * pi * J / 365) - 1.39),
+      lat_rad = (pi / 180) * lat_est,
+      sigma = 4.903 * 10^-9, # MJ K-4 m-2 day -1
       phi = lat_est * pi / 180,
-      ws = acos(-tan(phi) * tan(delta_s)),
-      Ra = (24 * 60 / pi) * Gsc * dr * (ws * sin(phi) * sin(delta_s) + cos(phi) * cos(delta_s) * sin(ws)),
-      Rso = (0.75 + 2e-5 * z_est) * Ra,
+      ws = acos(-tan(lat_rad) * tan(solar_decli)),
+      Ra = (24 * 60 / pi) * Gsc * dr * ((ws * sin(lat_rad) * sin(solar_decli)) + (cos(lat_rad) * cos(solar_decli) * sin(ws))),
+      Rso = (0.75 + (2 * 10^-5) * z_est) * Ra,
       Rns = 0.77 * Rs,
-      Rnl = sigma * ((Tmax + 273.16)^4 + (Tmin + 273.16)^4) / 2 *
-        (0.34 - 0.14 * sqrt(ea)) * (1.35 * (Rs / Rso) - 0.35),
+      Rnl = sigma * ((((Tmax + 273.16)^4) + ((Tmin + 273.16)^4)) / 2) * (0.34 - 0.14 * sqrt(ea2)) * (1.35 * (Rs / Rso) - 0.35),
       Rn = Rns - Rnl,
+      Rng = 0.408 * Rn,
+      ETrad = DT * Rng,
+      ETwind = PT * TT * (es - ea2),
       G = 0,
-      ETo2 = PT * TT * (es - ea) + DT * 0.408 * (Rns - Rnl),
+      ETo2 = ETwind + ETrad,
       ETo = (0.408 * delta * (Rn - G) + gamma * 900 / (Tmean + 273) * u2 * (es - ea)) /
         (delta + gamma * (1 + 0.34 * u2))
     ) %>%
-    select(Estacao, Data, ETo, ETo2, Chuva)
+    select(Estacao, Data, ETo, Chuva)
 
   return(df_resumo2)
 }

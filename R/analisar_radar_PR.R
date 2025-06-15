@@ -14,13 +14,13 @@
 #' @examples
 #' \dontrun{
 #' img <- baixar_radar_PR()
-#' result <- analisar_radar_PR(img, mega = "Cianorte", raio = 60)
+#' result <- analisar_radar_PR(img, mega = "Cianorte", raio = 50)
 #' }
 #'
 #' @author Santos Henrique Brant Dias
 #' @export
 
-analisar_radar_PR <- function(img,mega='Cianorte',raio=55) {
+analisar_radar_PR <- function(img, mega='Castelo', raio=50) {
 
   if (mega == 'Cianorte') {
     x_centro=388
@@ -34,13 +34,13 @@ analisar_radar_PR <- function(img,mega='Cianorte',raio=55) {
   }
 
   #Verificar coordenadas
-  #image_draw(img)
-  #points(x_centro, y_centro, col = "red", pch = 19, cex = 2)  # ajuste até bater com Cascavel
-  #points(x_centro+raio, y_centro, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
-  #points(x_centro-raio, y_centro, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
-  #points(x_centro, y_centro+raio, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
-  #points(x_centro, y_centro-raio, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
-  #dev.off()
+  image_draw(img)
+  points(x_centro, y_centro, col = "red", pch = 19, cex = 2)  # ajuste até bater com Cascavel
+  points(x_centro+raio, y_centro, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
+  points(x_centro-raio, y_centro, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
+  points(x_centro, y_centro+raio, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
+  points(x_centro, y_centro-raio, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
+  dev.off()
 
   img_data <- image_data(img, channels = "rgb")
 
@@ -66,9 +66,9 @@ analisar_radar_PR <- function(img,mega='Cianorte',raio=55) {
   #plot(img_data[2,,])
 
   # Calcula a média de cor
-  media_r <- mean(r_vals)
-  media_g <- mean(g_vals)
-  media_b <- mean(b_vals)
+  media_r <- mean(r_vals); media_r
+  media_g <- mean(g_vals); media_g
+  media_b <- mean(b_vals); media_b
 
   # Classificação
   resultado <- if (media_r > 180 & media_g < 100) {
