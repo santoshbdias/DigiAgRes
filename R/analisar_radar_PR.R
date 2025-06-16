@@ -80,6 +80,6 @@ analisar_radar_PR <- function(img, mega='Castelo', raio=50) {
   } else {
     "Sem chuvas"
   }
-  cat(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "- Resultado:", resultado, "\n")
+  #cat(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "- Resultado:", resultado, "\n")
   return(resultado)
 }
