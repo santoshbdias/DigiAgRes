@@ -154,23 +154,31 @@ TopoData_download_to_vector(
 )
 ```
 
-### 6.🌧️ Análise automática de radar meteorológico e envio de alertas
+### 6.🌧️ Análise automática de radar meteorológico e envio de alertas por Telegram
 O DigiAgRes permite baixar a imagem mais recente do radar meteorológico do Simepar, analisar a presença de chuva em uma região de interesse (com base na cor da imagem) e enviar alertas por e-mail sempre que uma condição meteorológica for detectada. Isso pode ser automatizado com um loop que roda a cada 10 minutos.
 
 ``` r
-library(DigiAgRes)
+if(!require("pacman")) install.packages("pacman");pacman::p_load(
+  DigiAgRes,httr, jsonlite, magick)  # Instalar/ativar pacotes
 
 repeat {
-  cat(format(Sys.time(), "%H:%M"), "- Executando função...\n")
+  minuto <- as.numeric(format(Sys.time(), "%M"))
+  cat(format(Sys.time(), "%H:%M"), "- Verificando horário...\n")
 
-  # Baixa a imagem mais recente do radar meteorológico do PR
-  img <- baixar_radar_PR()
-  raio = 55
+  # Verifica se o minuto termina em 3
+  if (minuto %% 10 == 3) {
+    cat(format(Sys.time(), "%Y-%m-%d %H:%M"), "- Executando...\n")
 
-  Print('Cianorte')
-  
-  image_draw(img)
-  points(388, y_centro, col = "red", pch = 19, cex = 2)  # ajuste até bater com Cascavel
+    minuto %% 10 == 3
+
+    # Baixa a imagem mais recente do radar meteorológico do PR
+    img <- baixar_radar_PR()
+    raio = 55
+
+    cat('Cianorte',"\n")
+
+  img_cianorte <- image_draw(img)
+  points(388, 240, col = "red", pch = 19, cex = 2)  # ajuste até bater com Cascavel
   points(388+raio, 240, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
   points(388-raio, 240, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
   points(388, 240+raio, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
@@ -180,35 +188,25 @@ repeat {
   # Analisa a imagem para a região de Cianorte
   resul <- analisar_radar_PR(img, mega = 'Cianorte', raio = 55)
 
-
-  #Para enviar a imagem no Telegram
-  caminho_temp <- tempfile(fileext = ".png")
-  magick::image_write(img, path = caminho_temp, format = "png")
-
-  enviar_telegram_imagem(
-  bot_token = "793455858745:AAETfffffffsfhgfdhfhjfMHEx_Eo8",  # Seu token real
-  chat_id = "-10085578820906",                           # ID do grupo
-  caminho_imagem = caminho_temp,  # Caminho da imagem
-  legenda = paste0("Radar atualizado às ",13:10," - risco de chuva em Cianorte")
-)
-
-
-
-
   # Envia e-mail de alerta caso a condição detectada seja "Sem chuvas"
-  #if (resul == "Chuva forte (vermelho)" || resul == "Chuva leve (amarelo)" || resul == "Risco de chuva (verde)") {
-  #  enviar_email_alerta(
-  #    from_email = 'agrolab@gmail.com',
-  #    to_email = c('AT2@hotmail.com','AT2@gmail.com'),
-  #    senha_app = 'sua_senha_de_app_aqui',
-  #    corpo_mensagem = paste("🚨 Alerta: ", resul)
-  #  )
-  #}
+  if (resul == "Chuva forte (vermelho)" || resul == "Chuva leve (amarelo)" || resul == "Risco de chuva (verde)") {
+    caminho_temp <- tempfile(fileext = ".png")
+    magick::image_write(img_cianorte, path = caminho_temp, format = "png")
 
-  print('Presidente Castelo Branco')
+    enviar_telegram_imagem(
+      bot_token = "79387979745:AAdhgfhfghgH6qCnpfPrMEi-plgrVMHEx_Eo8",  # Seu token real
+      chat_id = "-105678679870906",                           # ID do grupo
+      caminho_imagem = caminho_temp,  # Caminho da imagem
+      legenda = paste0("Radar atualizado às ",format(Sys.time(), "%H:%M")," - risco de chuva em Cianorte")
+    )
+  } else if (resul == 'Sem chuvas') {
+    cat('Sem Chuvas',"\n")
+  }
 
-  image_draw(img)
-  points(435, y_centro, col = "red", pch = 19, cex = 2)  # ajuste até bater com Cascavel
+  cat('Presidente Castelo Branco',"\n")
+
+  img_castelo <- image_draw(img)
+  points(435, 190, col = "red", pch = 19, cex = 2)  # ajuste até bater com Cascavel
   points(435+raio, 190, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
   points(435-raio, 190, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
   points(435, 190+raio, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
@@ -218,11 +216,26 @@ repeat {
   # Analisa a imagem para a região de Cianorte
   resul2 <- analisar_radar_PR(img, mega = "Castelo", raio = 55)
 
+  # Envia e-mail de alerta caso a condição detectada seja "Sem chuvas"
+  if (resul2 == "Chuva forte (vermelho)" || resul2 == "Chuva leve (amarelo)" || resul2 == "Risco de chuva (verde)") {
 
+    caminho_temp <- tempfile(fileext = ".png")
+    magick::image_write(img_castelo, path = caminho_temp, format = "png")
 
-
-  # Espera 10 minutos (600 segundos) para a próxima execução
-  Sys.sleep(600)
+    enviar_telegram_imagem(
+      bot_token = "79387979745:AAdhgfhfghgH6qCnpfPrMEi-plgrVMHEx_Eo8",  # Seu token real
+      chat_id = "-105678679870906",                           # ID do grupo
+      caminho_imagem = caminho_temp,  # Caminho da imagem
+      legenda = paste0("Radar atualizado às ",format(Sys.time(), "%H:%M")," - risco de chuva em Presidente Castelo Branco")
+    )
+  } else if (resul == 'Sem chuvas') {
+    cat('Sem Chuvas',"\n")
+  }
+  # Espera 20 segundos antes de checar de novo
+  Sys.sleep(550)
+  }
+    # Espera 20 segundos antes de checar de novo
+    Sys.sleep(20)
 }
 ``` 
 
