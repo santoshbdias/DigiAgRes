@@ -28,7 +28,7 @@ necessárias a partir de dados horários.
 }
 \examples{
 \dontrun{
-eto_df <- eto_fao56_station(df, estacao='ICIANO1')
+eto_df <- eto_fao56_station(df, estacao='IPARANAM3')
 }
 
 }

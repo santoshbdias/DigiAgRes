@@ -165,19 +165,61 @@ repeat {
 
   # Baixa a imagem mais recente do radar meteorológico do PR
   img <- baixar_radar_PR()
+  raio = 55
+
+  Print('Cianorte')
+  
+  image_draw(img)
+  points(388, y_centro, col = "red", pch = 19, cex = 2)  # ajuste até bater com Cascavel
+  points(388+raio, 240, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
+  points(388-raio, 240, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
+  points(388, 240+raio, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
+  points(388, 240-raio, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
+  dev.off()
 
   # Analisa a imagem para a região de Cianorte
-  resul <- analisar_radar_PR(img, mega = "Cianorte", raio = 55)
+  resul <- analisar_radar_PR(img, mega = 'Cianorte', raio = 55)
+
+
+  #Para enviar a imagem no Telegram
+  caminho_temp <- tempfile(fileext = ".png")
+  magick::image_write(img, path = caminho_temp, format = "png")
+
+  enviar_telegram_imagem(
+  bot_token = "793455858745:AAETfffffffsfhgfdhfhjfMHEx_Eo8",  # Seu token real
+  chat_id = "-10085578820906",                           # ID do grupo
+  caminho_imagem = caminho_temp,  # Caminho da imagem
+  legenda = paste0("Radar atualizado às ",13:10," - risco de chuva em Cianorte")
+)
+
+
+
 
   # Envia e-mail de alerta caso a condição detectada seja "Sem chuvas"
-  if (resul == "Chuva forte (vermelho)" || resul == "Chuva leve (amarelo)") {
-    enviar_email_alerta(
-      from_email = "seuemail@gmail.com",
-      to_email = "destino@gmail.com",
-      senha_app = "sua_senha_de_app_aqui"
-      corpo_mensagem = paste("🚨 Alerta:", resul)
-    )
-  }
+  #if (resul == "Chuva forte (vermelho)" || resul == "Chuva leve (amarelo)" || resul == "Risco de chuva (verde)") {
+  #  enviar_email_alerta(
+  #    from_email = 'agrolab@gmail.com',
+  #    to_email = c('AT2@hotmail.com','AT2@gmail.com'),
+  #    senha_app = 'sua_senha_de_app_aqui',
+  #    corpo_mensagem = paste("🚨 Alerta: ", resul)
+  #  )
+  #}
+
+  print('Presidente Castelo Branco')
+
+  image_draw(img)
+  points(435, y_centro, col = "red", pch = 19, cex = 2)  # ajuste até bater com Cascavel
+  points(435+raio, 190, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
+  points(435-raio, 190, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
+  points(435, 190+raio, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
+  points(435, 190-raio, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
+  dev.off()
+
+  # Analisa a imagem para a região de Cianorte
+  resul2 <- analisar_radar_PR(img, mega = "Castelo", raio = 55)
+
+
+
 
   # Espera 10 minutos (600 segundos) para a próxima execução
   Sys.sleep(600)

@@ -24,7 +24,7 @@
 enviar_email_alerta <- function(from_email, to_email, senha_app, corpo_mensagem = "🚨 Alerta de chuva detectada!") {
 
   # Configura SMTP do Gmail
-  smtp <- server(
+  smtp <- emayili::server(
     host = "smtp.gmail.com",
     port = 587,
     username = from_email,
@@ -32,7 +32,7 @@ enviar_email_alerta <- function(from_email, to_email, senha_app, corpo_mensagem 
   )
 
   # Cria a mensagem
-  email <- envelope() |>
+  email <- emayili::envelope() |>
     from(from_email) |>
     to(to_email) |>
     subject("🌧️ Alerta de chuva no radar - Simepar") |>

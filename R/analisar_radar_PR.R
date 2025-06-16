@@ -71,12 +71,12 @@ analisar_radar_PR <- function(img, mega='Castelo', raio=50) {
   media_b <- mean(b_vals); media_b
 
   # Classificação
-  resultado <- if (media_r > 180 & media_g < 100) {
+  resultado <- if (media_r > 80 & media_b < 30) {
     "Chuva forte (vermelho)"
-  } else if (media_g > 180 & media_b < 100) {
+  } else if (media_g > 80 & media_r > 80) {
     "Chuva leve (amarelo)"
-  } else if (media_b > 180) {
-    " Risco de chuva (verde)"
+  } else if (media_g > 80) {
+    "Risco de chuva (verde)"
   } else {
     "Sem chuvas"
   }

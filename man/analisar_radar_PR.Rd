@@ -4,7 +4,7 @@
 \alias{analisar_radar_PR}
 \title{Analisa a cor média em uma região circular do radar e interpreta intensidade de chuva}
 \usage{
-analisar_radar_PR(img, mega = "Cianorte", raio = 55)
+analisar_radar_PR(img, mega = "Castelo", raio = 50)
 }
 \arguments{
 \item{img}{Imagem de radar obtida pela função \code{baixar_radar_PR()}.}
@@ -22,7 +22,7 @@ Esta função analisa uma imagem de radar meteorológico e classifica a intensid
 \examples{
 \dontrun{
 img <- baixar_radar_PR()
-result <- analisar_radar_PR(img, mega = "Cianorte", raio = 60)
+result <- analisar_radar_PR(img, mega = "Cianorte", raio = 50)
 }
 
 }
