@@ -22,3 +22,5 @@
 #devtools::load_all()     # Para testar as funções sem instalar
 #*devtools::document()     # Para gerar a documentação
 #devtools::install()      # Para instalar como pacote
+
+

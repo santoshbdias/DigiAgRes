@@ -177,45 +177,42 @@ repeat {
 
     cat('Cianorte',"\n")
 
-  img_cianorte <- image_draw(img)
-  points(388, 240, col = "red", pch = 19, cex = 2)  # ajuste até bater com Cascavel
-  points(388+raio, 240, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
-  points(388-raio, 240, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
-  points(388, 240+raio, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
-  points(388, 240-raio, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
+  img_plot <- image_draw(img)
+  points(388, 240, col = "red", pch = 19, cex = 2)  # cianorte
+  points(388+raio, 240, col = "purple", pch = 19, cex = 2)  # cianorte
+  points(388-raio, 240, col = "purple", pch = 19, cex = 2)  # cianorte
+  points(388, 240+raio, col = "purple", pch = 19, cex = 2)  # cianorte
+  points(388, 240-raio, col = "purple", pch = 19, cex = 2)  # cianorte
+
+  points(435, 190, col = "red", pch = 19, cex = 2)  # Castelo
+  points(435+raio, 190, col = "purple", pch = 19, cex = 2)  # Castelo
+  points(435-raio, 190, col = "purple", pch = 19, cex = 2)  # Castelo
+  points(435, 190+raio, col = "purple", pch = 19, cex = 2)  # Castelo
+  points(435, 190-raio, col = "purple", pch = 19, cex = 2)  # Castelo
   dev.off()
 
-  print(img_cianorte)
+  print(img_plot)
 
   # Analisa a imagem para a região de Cianorte
   resul <- analisar_radar_PR(img, mega = 'Cianorte', raio = 55)
 
   # Envia e-mail de alerta caso a condição detectada seja "Sem chuvas"
   if (resul == "Chuva forte (vermelho)" || resul == "Chuva leve (amarelo)" || resul == "Risco de chuva (verde)") {
-    caminho_temp <- tempfile(fileext = ".png")
-    magick::image_write(img_cianorte, path = caminho_temp, format = "png")
+    caminho_temp <- tempfile(fileext = ".jpeg")
+    magick::image_write(img_plot, path = caminho_temp, format = ".jpeg")
 
     enviar_telegram_imagem(
       bot_token = "79387979745:AAdhgfhfghgH6qCnpfPrMEi-plgrVMHEx_Eo8",  # Seu token real
-      chat_id = "-105678679870906",                           # ID do grupo
+      chat_id = "-105678679870906",    # ID do grupo
       caminho_imagem = caminho_temp,  # Caminho da imagem
-      legenda = paste0("Radar atualizado às ",format(Sys.time(), "%H:%M")," - risco de chuva em Cianorte")
-    )
+      legenda = paste0("Radar atualizado às ",format(Sys.time(), "%H:%M"),
+                       " - risco de chuva em Cianorte, ",resul) )
   } else if (resul == 'Sem chuvas') {
     cat('Sem Chuvas',"\n")
   }
 
+
   cat('Presidente Castelo Branco',"\n")
-
-  img_castelo <- image_draw(img)
-  points(435, 190, col = "red", pch = 19, cex = 2)  # ajuste até bater com Cascavel
-  points(435+raio, 190, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
-  points(435-raio, 190, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
-  points(435, 190+raio, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
-  points(435, 190-raio, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
-  dev.off()
-
-  print(img_castelo)
 
   # Analisa a imagem para a região de Cianorte
   resul2 <- analisar_radar_PR(img, mega = "Castelo", raio = 55)
@@ -223,24 +220,26 @@ repeat {
   # Envia e-mail de alerta caso a condição detectada seja "Sem chuvas"
   if (resul2 == "Chuva forte (vermelho)" || resul2 == "Chuva leve (amarelo)" || resul2 == "Risco de chuva (verde)") {
 
-    caminho_temp <- tempfile(fileext = ".png")
-    magick::image_write(img_castelo, path = caminho_temp, format = "png")
+    caminho_temp <- tempfile(fileext = ".jpeg")
+    magick::image_write(img_plot, path = caminho_temp, format = ".jpeg")
 
     enviar_telegram_imagem(
       bot_token = "79387979745:AAdhgfhfghgH6qCnpfPrMEi-plgrVMHEx_Eo8",  # Seu token real
-      chat_id = "-105678679870906",                           # ID do grupo
+      chat_id = "-105678679870906",    # ID do grupo
       caminho_imagem = caminho_temp,  # Caminho da imagem
-      legenda = paste0("Radar atualizado às ",format(Sys.time(), "%H:%M")," - risco de chuva em Presidente Castelo Branco")
+      legenda = paste0("Radar atualizado às ",format(Sys.time(), "%H:%M"),
+                       " - risco de chuva em Presidente Castelo Branco, ",resul2)
     )
   } else if (resul == 'Sem chuvas') {
     cat('Sem Chuvas',"\n")
   }
-  # Espera 20 segundos antes de checar de novo
+  # Espera aproximadamente 9 minutos antes de checar de novo
   Sys.sleep(550)
   }
     # Espera 20 segundos antes de checar de novo
     Sys.sleep(20)
 }
+
 ``` 
 
 
