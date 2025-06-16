@@ -185,6 +185,8 @@ repeat {
   points(388, 240-raio, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
   dev.off()
 
+  print(img_cianorte)
+
   # Analisa a imagem para a região de Cianorte
   resul <- analisar_radar_PR(img, mega = 'Cianorte', raio = 55)
 
@@ -212,6 +214,8 @@ repeat {
   points(435, 190+raio, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
   points(435, 190-raio, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
   dev.off()
+
+  print(img_castelo)
 
   # Analisa a imagem para a região de Cianorte
   resul2 <- analisar_radar_PR(img, mega = "Castelo", raio = 55)
