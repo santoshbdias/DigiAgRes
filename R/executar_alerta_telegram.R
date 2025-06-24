@@ -23,8 +23,13 @@ executar_alerta_telegram <- function(mega, chat_id, bot_token) {
 
   # Coordenadas conhecidas
   coords <- list(
-    "Cianorte" = list(x = 388, y = 240),
-    "Castelo"  = list(x = 435, y = 190)
+    'Cianorte' = list(x = 388, y = 240),
+    'Castelo'  = list(x = 437, y = 190),
+    'PontaGrossa' = list(x = 613, y = 361),
+    'Cambé' = list(x = 509, y = 185),
+    'Guarapuava' = list(x = 483, y = 405),
+    'Toledo' = list(x = 308, y = 335),
+    'DoisVizinhos' = list(x = 340, y = 420)
   )
 
   if (!(mega %in% names(coords))) {

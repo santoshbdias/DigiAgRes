@@ -66,6 +66,12 @@ station_wund_download <- function(stations, start_date, end_date) {
 
       tabela_dados <- purrr::pluck(tabelas_filtradas, 1)
 
+      if (nrow(tabela_dados) == 0) {
+        message(paste0("Sem dados para", stations[i], "em", datas[f]))
+
+        tabela_dados <- rbind(tabela_dados, setNames(as.list(rep(NA, ncol(tabela_dados))), names(tabela_dados)))
+      }
+
       vrtt <- data.frame(stations[i],elev_m, lat_dec, long_dec,
                          format(datas[f], "%Y-%m-%d"), tabela_dados)
 

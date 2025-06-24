@@ -22,16 +22,15 @@
 
 analisar_radar_PR <- function(img, mega='Castelo', raio=50) {
 
-  if (mega == 'Cianorte') {
-    x_centro=388
-    y_centro=240
-  } else if (mega == 'Castelo') {
-    x_centro=435
-    y_centro=190
-  } else if (mega == 'teste') {
-    x_centro=435
-    y_centro=350
-  }
+  coords <- list(
+    'Cianorte' = list(x = 388, y = 240),
+    'Castelo'  = list(x = 437, y = 190),
+    'PontaGrossa' = list(x = 613, y = 361),
+    'Cambé' = list(x = 509, y = 185),
+    'Guarapuava' = list(x = 483, y = 405),
+    'Toledo' = list(x = 308, y = 335),
+    'DoisVizinhos' = list(x = 340, y = 420)
+  )
 
   #Verificar coordenadas
   image_draw(img)
