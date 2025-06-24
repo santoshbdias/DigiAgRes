@@ -262,10 +262,10 @@ repeat {
 
     if (!is.null(img_plot)) print(img_plot)
 
-    for (cidade in names(coords)) {
+    for (g in 1:length(names(coords))) {
       tryCatch({
         executar_alerta_telegram(
-          mega = cidade,
+          mega = names(coords)[g],
           chat_id = chat_id,
           bot_token = bot_token
         )

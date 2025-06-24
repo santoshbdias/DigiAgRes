@@ -19,7 +19,7 @@
 #' @author Santos Henrique Brant Dias
 #' @export
 
-executar_alerta_telegram <- function(mega, chat_id, bot_token) {
+executar_alerta_telegram <- function(mega="Cianorte", chat_id, bot_token) {
 
   # Coordenadas conhecidas
   coords <- list(
@@ -36,10 +36,6 @@ executar_alerta_telegram <- function(mega, chat_id, bot_token) {
     stop("Cidade não cadastrada. Adicione as coordenadas na lista 'coords'.")
   }
 
-  x_centro <- coords[[mega]]$x
-  y_centro <- coords[[mega]]$y
-  raio <- 55
-
   cat(format(Sys.time(), "%H:%M"), "- Verificando radar para:", mega, "\n")
 
   img <- tryCatch(baixar_radar_PR(), error = function(e) NULL)
@@ -48,9 +44,18 @@ executar_alerta_telegram <- function(mega, chat_id, bot_token) {
     return(invisible(NULL))
   }
 
-  resultado <- analisar_radar_PR(img, mega = mega, raio = raio)
+  rgb_Res <- analisar_radar_PR(img, mega = mega)
 
-  #resultado = "Risco de chuva (verde)"
+  # Classificação
+  resultado <- if (rgb_Res$R > 80 & rgb_Res$B < 30) {
+    "Chuva forte (vermelho)"
+  } else if (rgb_Res$G > 80 & rgb_Res$R > 60) {
+    "Chuva leve (amarelo)"
+  } else if (rgb_Res$G > 80) {
+    "Risco de chuva (verde)"
+  } else {
+    "Sem chuvas"
+  }
 
   if (resultado %in% c("Risco de chuva (verde)", "Chuva leve (amarelo)", "Chuva forte (vermelho)")) {
     legenda <- paste0("🚨 Alerta meteorológico em *", mega, "*:\n", resultado)

@@ -14,13 +14,13 @@
 #' @examples
 #' \dontrun{
 #' img <- baixar_radar_PR()
-#' result <- analisar_radar_PR(img, mega = "Cianorte", raio = 50)
+#' result <- analisar_radar_PR(img, mega = "Cianorte", raio = 55)
 #' }
 #'
 #' @author Santos Henrique Brant Dias
 #' @export
 
-analisar_radar_PR <- function(img, mega='Castelo', raio=50) {
+analisar_radar_PR <- function(img, mega='Castelo', raio=55) {
 
   coords <- list(
     'Cianorte' = list(x = 388, y = 240),
@@ -32,15 +32,6 @@ analisar_radar_PR <- function(img, mega='Castelo', raio=50) {
     'DoisVizinhos' = list(x = 340, y = 420)
   )
 
-  #Verificar coordenadas
-  image_draw(img)
-  points(x_centro, y_centro, col = "red", pch = 19, cex = 2)  # ajuste até bater com Cascavel
-  points(x_centro+raio, y_centro, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
-  points(x_centro-raio, y_centro, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
-  points(x_centro, y_centro+raio, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
-  points(x_centro, y_centro-raio, col = "purple", pch = 19, cex = 2)  # ajuste até bater com Cascavel
-  dev.off()
-
   img_data <- image_data(img, channels = "rgb")
 
   largura <- dim(img_data)[2]
@@ -49,10 +40,10 @@ analisar_radar_PR <- function(img, mega='Castelo', raio=50) {
   # Inicializa vetores
   r_vals <- c(); g_vals <- c(); b_vals <- c()
 
-  for (x in seq(x_centro - raio, x_centro + raio, by = 2)) {
-    for (y in seq(y_centro - raio, y_centro + raio, by = 2)) {
+  for (x in seq(coords[[mega]]$x - raio, coords[[mega]]$x + raio, by = 2)) {
+    for (y in seq(coords[[mega]]$y - raio, coords[[mega]]$y + raio, by = 2)) {
       if (x > 0 & x <= largura & y > 0 & y <= altura) {
-        dist <- sqrt((x - x_centro)^2 + (y - y_centro)^2)
+        dist <- sqrt((x - coords[[mega]]$x)^2 + (y - coords[[mega]]$y)^2)
         if (dist <= raio) {
           r_vals <- c(r_vals, as.numeric(img_data[1, x, y]))
           g_vals <- c(g_vals, as.numeric(img_data[2, x, y]))
@@ -69,16 +60,5 @@ analisar_radar_PR <- function(img, mega='Castelo', raio=50) {
   media_g <- mean(g_vals); media_g
   media_b <- mean(b_vals); media_b
 
-  # Classificação
-  resultado <- if (media_r > 80 & media_b < 30) {
-    "Chuva forte (vermelho)"
-  } else if (media_g > 80 & media_r > 80) {
-    "Chuva leve (amarelo)"
-  } else if (media_g > 80) {
-    "Risco de chuva (verde)"
-  } else {
-    "Sem chuvas"
-  }
-  #cat(format(Sys.time(), "%Y-%m-%d %H:%M:%S"), "- Resultado:", resultado, "\n")
-  return(resultado)
+  return(list(R = media_r, G = media_g, B = media_b))
 }

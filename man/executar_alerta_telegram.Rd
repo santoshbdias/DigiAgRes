@@ -4,7 +4,7 @@
 \alias{executar_alerta_telegram}
 \title{Executa análise do radar meteorológico e envia alerta com imagem via Telegram}
 \usage{
-executar_alerta_telegram(mega, chat_id, bot_token)
+executar_alerta_telegram(mega = "Cianorte", chat_id, bot_token)
 }
 \arguments{
 \item{mega}{Nome da cidade a ser monitorada. Deve ser um dos nomes previamente cadastrados na função (ex: "Cianorte", "Castelo").}
