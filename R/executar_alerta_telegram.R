@@ -65,6 +65,19 @@ executar_alerta_telegram <- function(mega="Cianorte", img_plot, chat_id, bot_tok
 
     magick::image_write(img_plot, path = caminho_imagem, format = "png")
 
+  # if (!is.null(img)) {
+  #   img_plot <- image_draw(img)
+  #     x <- coords[[mega]]$x
+  #     y <- coords[[mega]]$y
+  #     points(x, y, col = "red", pch = 19, cex = 1)
+  #     points(x + raio, y, col = "purple", pch = 19, cex = 1)
+  #     points(x - raio, y, col = "purple", pch = 19, cex = 1)
+  #     points(x, y + raio, col = "purple", pch = 19, cex = 1)
+  #     points(x, y - raio, col = "purple", pch = 19, cex = 1)
+  #   dev.off()
+  # }
+  #   print(img_plot)
+
     # Enviar imagem via Telegram
     httr::POST(
       url = paste0("https://api.telegram.org/bot", bot_token, "/sendPhoto"),
@@ -82,54 +95,8 @@ executar_alerta_telegram <- function(mega="Cianorte", img_plot, chat_id, bot_tok
 }
 
 
-##################################################################################################
-##################################################################################################
-##################################################################################################
 
 
-
-enviar_mensagem_status_diaria <- function(hora_alerta='13:00', img_plot, bot_token, chat_id,
-                                          mensagem = 'Mensagem diária de status. Sistema de alerta meteorológico ativo e funcionando perfeitamente.') {
-  hora_atual <- format(Sys.time(), "%H:%M")
-
-  if (hora_atual != hora_alerta) {
-    return(invisible(NULL))
-  }
-
-  if (is.null(img_plot)) {
-    cat("⚠️ Imagem do radar não disponível para envio da mensagem diária.\n")
-    return(invisible(NULL))
-  }
-
-  caminho_imagem <- tempfile(fileext = ".png")
-
-  img_salva <- tryCatch({
-    magick::image_write(img_plot, path = caminho_imagem, format = "png")
-    TRUE
-  }, error = function(e) {
-    cat("❌ Erro ao salvar imagem: ", conditionMessage(e), "\n")
-    FALSE
-  })
-
-  if (!img_salva) return(invisible(NULL))
-
-  tryCatch({
-    httr::POST(
-      url = paste0("https://api.telegram.org/bot", bot_token, "/sendPhoto"),
-      body = list(
-        chat_id = chat_id,
-        photo = httr::upload_file(caminho_imagem),
-        caption = mensagem,
-        parse_mode = "Markdown"
-      )
-    )
-    cat("✅ Mensagem diária de status enviada.\n")
-  }, error = function(e) {
-    cat("❌ Erro ao enviar mensagem no Telegram: ", conditionMessage(e), "\n")
-  })
-
-  invisible(NULL)
-}
 
 
 

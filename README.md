@@ -181,17 +181,15 @@ ultima_mensagem_diaria <- as.Date(Sys.time()) - 1
 
 repeat {
   minuto <- as.numeric(format(Sys.time(), "%M"))
-  hora <- format(Sys.time(), "%H:%M")
-  hoje <- as.Date(Sys.time())
 
-  cat(hora, "- Verificando horário...\n")
+  cat(format(Sys.time(), "%H:%M"), "- Verificando horário...\n")
 
   coords <- list(
     'Cianorte' = list(x = 388, y = 240),
     'Castelo'  = list(x = 437, y = 190)
   )
 
-  raio=55
+  raio=50
 
   radar_img <- tryCatch(
     baixar_radar_PR(),
@@ -216,45 +214,11 @@ repeat {
     dev.off()
   }
 
-  # ✅ Envia mensagem de status uma vez por dia às 13:00
-  if (hora == "13:00" && ultima_mensagem_diaria < hoje) {
-
-    caminho_imagem <- tempfile(fileext = ".png")
-
-    img_salva <- tryCatch(
-      {
-        if (!is.null(radar_img)) {
-          magick::image_write(img_plot, path = caminho_imagem, format = "png")
-          TRUE
-        } else {
-          FALSE
-        }
-      },
-      error = function(e) {
-        cat("❌ Erro ao salvar imagem: ", conditionMessage(e), "\n")
-        FALSE
-      }
-    )
-
-    if (img_salva) {
-      tryCatch({
-        httr::POST(
-          url = paste0("https://api.telegram.org/bot", bot_token, "/sendPhoto"),
-          body = list(
-            chat_id = chat_id,
-            photo = httr::upload_file(caminho_imagem),
-            caption = "Mensagem diária de status. Sistema de alerta meteorológico ativo e funcionando perfeitamente. *Sem chuvas* até o momento",
-            parse_mode = "Markdown"
-          )
-        )
-        cat("✅ Mensagem diária de status enviada.\n")
-        ultima_mensagem_diaria <- hoje
-      }, error = function(e) {
-        cat("❌ Erro ao enviar mensagem no Telegram: ", conditionMessage(e), "\n")
-      })
-    }
+  if (format(Sys.time(), "%H:%M")=='13:00') {
+  enviar_mensagem_status_diaria(hora_alerta='13:00', img_plot, bot_token, chat_id,
+                                "Mensagem diária de status. Sistema de alerta meteorológico ativo e funcionando perfeitamente.")
+  Sys.sleep(60)  # Aguarda 1 minuto para evitar múltiplos envios
   }
-
 
   #Verifica se é hora de rodar a função principal, se o minuto termina em 3
   if (minuto %% 10 == 3) {
@@ -266,9 +230,11 @@ repeat {
       tryCatch({
         executar_alerta_telegram(
           mega = names(coords)[g],
+          img_plot = img_plot,
           chat_id = chat_id,
           bot_token = bot_token
         )
+        print(img_plot)
       }, error = function(e) {
         cat("❌ Erro ao executar alerta para ", cidade, ": ", conditionMessage(e), "\n")
       })
