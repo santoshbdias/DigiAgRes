@@ -20,4 +20,7 @@ Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
-Imports: rvest,sf,terra,units,lubridate,dplyr,magick,readr,readxl,httr,xml2,stringr,writexl,tibble,ggplot2,emayili, jsonlite
+Imports: rvest,sf,terra,units,lubridate,dplyr,magick,readr,readxl,httr,xml2,stringr,writexl,tibble,ggplot2,emayili, jsonlite,scales,grDevices
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3

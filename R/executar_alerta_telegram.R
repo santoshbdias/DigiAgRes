@@ -47,11 +47,11 @@ executar_alerta_telegram <- function(mega="Cianorte", img_plot, chat_id, bot_tok
   rgb_Res <- analisar_radar_PR(img, mega = mega, raio)
 
   # Classificação
-  resultado <- if (rgb_Res$R > 80 & rgb_Res$B < 30) {
+  resultado <- if (rgb_Res$R > 70 & rgb_Res$B < 30) {
     "Chuva forte (vermelho)"
-  } else if (rgb_Res$G > 80 & rgb_Res$R > 60) {
+  } else if (rgb_Res$G > 70 & rgb_Res$R > 60) {
     "Chuva leve (amarelo)"
-  } else if (rgb_Res$G > 80) {
+  } else if (rgb_Res$G > 70) {
     "Risco de chuva (verde)"
   } else {
     "Sem chuvas"

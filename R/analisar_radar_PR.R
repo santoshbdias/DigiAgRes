@@ -20,7 +20,7 @@
 #' @author Santos Henrique Brant Dias
 #' @export
 
-analisar_radar_PR <- function(img, mega='Castelo', raio=55) {
+analisar_radar_PR <- function(img, mega='Castelo', raio) {
 
   coords <- list(
     'Cianorte' = list(x = 388, y = 240),
@@ -40,18 +40,15 @@ analisar_radar_PR <- function(img, mega='Castelo', raio=55) {
   # Inicializa vetores
   r_vals <- c(); g_vals <- c(); b_vals <- c()
 
-  for (x in seq(coords[[mega]]$x - raio, coords[[mega]]$x + raio, by = 2)) {
-    for (y in seq(coords[[mega]]$y - raio, coords[[mega]]$y + raio, by = 2)) {
-      if (x > 0 & x <= largura & y > 0 & y <= altura) {
-        dist <- sqrt((x - coords[[mega]]$x)^2 + (y - coords[[mega]]$y)^2)
-        if (dist <= raio) {
-          r_vals <- c(r_vals, as.numeric(img_data[1, x, y]))
-          g_vals <- c(g_vals, as.numeric(img_data[2, x, y]))
-          b_vals <- c(b_vals, as.numeric(img_data[3, x, y]))
-        }
-      }
-    }
-  }
+  for (theta in seq(0, 2*pi, length.out = 360)) {
+    for (vr in seq(1, raio, by=5)) {
+      x <- round(coords[[mega]]$x + vr * cos(theta))
+      y <- round(coords[[mega]]$y + vr * sin(theta))
+
+      r_vals <- c(r_vals, as.numeric(img_data[1, x, y]))
+      g_vals <- c(g_vals, as.numeric(img_data[2, x, y]))
+      b_vals <- c(b_vals, as.numeric(img_data[3, x, y]))
+  } }
 
   #plot(img_data[2,,])
 

@@ -177,7 +177,7 @@ conteudo$result |>
 
 chat_id <- '-48767525577'
 
-ultima_mensagem_diaria <- as.Date(Sys.time()) - 1
+raio=45
 
 repeat {
   minuto <- as.numeric(format(Sys.time(), "%M"))
@@ -189,31 +189,6 @@ repeat {
     'Castelo'  = list(x = 437, y = 190)
   )
 
-  raio=50
-
-  radar_img <- tryCatch(
-    baixar_radar_PR(),
-    error = function(e) {
-      cat("❌ Erro ao baixar imagem do radar: ", conditionMessage(e), "\n")
-      return(NULL)
-    }
-  )
-
-  if (!is.null(radar_img)) {
-    img_plot <- image_draw(radar_img)
-
-    for (cidade in names(coords)) {
-      x <- coords[[cidade]]$x
-      y <- coords[[cidade]]$y
-      points(x, y, col = "red", pch = 19, cex = 1)
-      points(x + raio, y, col = "purple", pch = 19, cex = 1)
-      points(x - raio, y, col = "purple", pch = 19, cex = 1)
-      points(x, y + raio, col = "purple", pch = 19, cex = 1)
-      points(x, y - raio, col = "purple", pch = 19, cex = 1)
-    }
-    dev.off()
-  }
-
   if (format(Sys.time(), "%H:%M")=='13:00') {
   enviar_mensagem_status_diaria(hora_alerta='13:00', img_plot, bot_token, chat_id,
                                 "Mensagem diária de status. Sistema de alerta meteorológico ativo e funcionando perfeitamente.")
@@ -224,6 +199,8 @@ repeat {
   if (minuto %% 10 == 3) {
     cat(format(Sys.time(), "%Y-%m-%d %H:%M"), "- Executando...\n")
 
+    img_plot <- gerar_imagem_radar(coords, raio)
+
     if (!is.null(img_plot)) print(img_plot)
 
     for (g in 1:length(names(coords))) {
@@ -232,11 +209,12 @@ repeat {
           mega = names(coords)[g],
           img_plot = img_plot,
           chat_id = chat_id,
-          bot_token = bot_token
+          bot_token = bot_token,
+          raio=raio
         )
         print(img_plot)
       }, error = function(e) {
-        cat("❌ Erro ao executar alerta para ", cidade, ": ", conditionMessage(e), "\n")
+        cat("\\u274C"," Erro ao executar alerta para ", names(coords)[g], ": ", conditionMessage(e), "\n")
       })
     }
     # Espera 6 minutos antes de checar de novo

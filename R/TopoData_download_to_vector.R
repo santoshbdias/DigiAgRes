@@ -5,6 +5,8 @@
 #'@param vector Caminho do arquivo do polígono vetorial
 #'@param pathdow Valor da distancia entre os pontos em metros
 #'
+#'@importFrom sf st_read
+#'
 #'@examples
 #'TopoData_download_to_vector("C:/Users/server_SantosDias/Downloads/Demilitacao_Area.kml",
 #' "C:/Users/server_SantosDias/Downloads")
@@ -25,7 +27,7 @@ TopoData_download_to_vector <- function(vector,pathdow){
 
   #sf, dplyr, stringr, terra)  # Instalar/ativar pacotes
 
-  area <- st_read(vector, quiet = TRUE)
+  area <- sf::st_read(vector, quiet = TRUE)
 
   kml_url <- "https://www.google.com/maps/d/u/0/kml?mid=1Yle0c2VU4waXo-Kzn0RBONZG9NgSYas&resourcekey&forcekml=1"
 
