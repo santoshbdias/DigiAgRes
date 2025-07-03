@@ -1,3 +1,54 @@
+rm(list = ls()); gc(); graphics.off(); cat("\014")# Atalho equivalente a Ctrl+L
+
+if (!requireNamespace("pacman", quietly = TRUE)) install.packages("pacman")
+pacman::p_load(rvest, dplyr, stringr, tidyr, httr)  # Instalar/ativar pacotes
+
+extrair_info_miguilim <- function(url) {
+  id <- stringr::str_extract(url, "\\d+$")
+
+  res <- tryCatch(httr::GET(url), error = function(e) return(NULL))
+  if (is.null(res) || httr::status_code(res) != 200) return(NULL)
+
+  page <- tryCatch(read_html(httr::content(res, as = "text")), error = function(e) return(NULL))
+  if (is.null(page)) return(NULL)
+
+  tabelas <- page %>% html_elements("table")
+  if (length(tabelas) == 0) return(NULL)
+
+  tds <- tabelas[[1]] %>% html_elements("td") %>% html_text(trim = TRUE)
+  if (length(tds) < 2 || length(tds) %% 2 != 0) return(NULL)
+
+  chaves <- tds[seq(1, length(tds), 2)]
+  valores <- tds[seq(2, length(tds), 2)]
+
+  df <- tibble::tibble(chave = chaves, valor = valores) %>%
+    dplyr::distinct(chave, .keep_all = TRUE) %>%
+    tidyr::pivot_wider(names_from = chave, values_from = valor)
+
+  df$id <- id
+  df$url <- url
+  return(df)
+}
+
+ids <- sprintf("%04d", 3000:9200)#3706:3710
+urls <- paste0("https://miguilim.ibict.br/handle/miguilim/", ids)
+
+dados_revistas <- list()
+for (i in seq_along(urls)) {
+  cat(sprintf("🔍 [%02d/%02d] Coletando ID %s\n", i, length(urls), ids[i]))
+  resultado <- extrair_info_miguilim(urls[i])
+  if (!is.null(resultado)) {
+    dados_revistas[[length(dados_revistas) + 1]] <- resultado
+  }
+}
+
+df_final <- bind_rows(dados_revistas)
+
+write.csv(df_final, file = "S:/OneDrive/Pesquisa/wArquivos/Avaliacao_Revistas/dados_miguilim.csv", fileEncoding = "ISO-8859-1", row.names = T)
+
+
+
+
 # rm(list = ls()); gc(); graphics.off(); cat("\014")# Atalho equivalente a Ctrl+L
 #
 # if(!require("pacman")) install.packages("pacman");pacman::p_load(

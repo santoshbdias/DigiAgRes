@@ -9,22 +9,22 @@ em agricultura digital.
 
 ------------------------------------------------------------------------
 
-## 🚀 Instalação dos softwares
+## Instalação dos softwares
 
 Antes de tudo, instale o **R** e o **RStudio**:
 
 Antes de utilizar o pacote, certifique-se de que você tem o **R** e o **RStudio** instalados:
 
-- 📥**R (CRAN):**  
+- **R (CRAN):**  
   Acesse [https://cran.r-project.org](https://cran.r-project.org) e baixe a versão mais recente do R para seu sistema operacional (Windows, Mac ou Linux).
 
-- 💻 **RStudio (IDE recomendada):**  
+- **RStudio (IDE recomendada):**  
   Acesse [https://posit.co/download/rstudio-desktop/](https://posit.co/download/rstudio-desktop/) e baixe o RStudio Desktop gratuito.
 
 ---
 
 
-## 💻 Instalação do pacote
+## Instalação do pacote
 
 Depois de instalar os softwares na sequência, instale o pacote com:
 
@@ -38,9 +38,9 @@ devtools::install_github("santoshbdias/DigiAgRes")
 
 ------------------------------------------------------------------------
 
-## 📚 Funcionalidades
+## Funcionalidades
 
-### 1.📥 Download e plot de dados meteorológicos da Weather Underground
+### 1. Download e plot de dados meteorológicos da Weather Underground
 
 Utilize a função ***station_wund_download()*** para baixar dados
 horários de estações meteorológicas pessoais (PWS) da rede Weather
@@ -72,7 +72,7 @@ Retorna um data.frame contendo temperatura, umidade, velocidade do vento, radia�
 
 
 
-### 2.💧 Cálculo da Evapotranspiração de Referência (ETo) diária — FAO 56
+### 2. Cálculo da Evapotranspiração de Referência (ETo) diária — FAO 56
 A função *calc_eto_fao56()* realiza o cálculo da evapotranspiração de referência (ETo) diária utilizando o método de Penman-Monteith proposto pela FAO (FAO 56). A função opera sobre os dados horários baixados com station_wund_download() e agrega os valores por estação e por dia.
 
 É necessário informar a altitude e a latitude da estação, que podem ser passadas como valores únicos ou vetores nomeados para múltiplas estações.
@@ -105,7 +105,7 @@ Essa métrica é essencial para o manejo hídrico e o cálculo das necessidades 
 
 
 
-### 3.🗺️ Gerar grade regular de pontos a partir de um polígono 
+### 3.️ Gerar grade regular de pontos a partir de um polígono 
 
 A função polygon_to_points_grid() permite criar um grid regular de pontos centrados dentro de um polígono (ex: área experimental ou talhão agrícola).
 
@@ -124,7 +124,7 @@ O sistema de coordenadas do KML é convertido automaticamente para UTM com base 
 
 
 
-### 4.🌱 Geração de pontos aleatórios com distância mínima
+### 4. Geração de pontos aleatórios com distância mínima
 
 Essa função permitirá gerar pontos aleatórios dentro de um polígono, respeitando uma distância mínima entre eles (útil para amostragem espacial).
 
@@ -154,7 +154,7 @@ TopoData_download_to_vector(
 )
 ```
 
-### 6.🌧️ Análise automática de radar meteorológico e envio de alertas por Telegram
+### 6.️ Análise automática de radar meteorológico e envio de alertas por Telegram
 O DigiAgRes permite baixar a imagem mais recente do radar meteorológico do Simepar, analisar a presença de chuva em uma região de interesse (com base na cor da imagem) e enviar alertas por e-mail sempre que uma condição meteorológica for detectada. Isso pode ser automatizado com um loop que roda a cada 10 minutos.
 
 ``` r

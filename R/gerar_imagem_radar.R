@@ -45,11 +45,11 @@ gerar_imagem_radar <- function(coords, raio) {
     points(x_centro, y_centro, col = "red2", pch = 19, cex = 0.5)
 
     for (vr in seq(5, raio, by = ((raio - 5)/3))) {
+      vri <- if (vr == 5) 0.01 else if (vr == raio) 0.2 else 0.1
+
       for (theta in seq(0, 2 * pi, length.out = 180)) {
         x <- round(x_centro + vr * cos(theta))
         y <- round(y_centro + vr * sin(theta))
-
-        vri <- if (vr == 5) 0.01 else if (vr == raio) 0.2 else 0.1
 
         points(x, y, col = "royalblue1", pch = 19, cex = vri)
       }
