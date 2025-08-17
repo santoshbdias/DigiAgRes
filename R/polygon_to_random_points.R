@@ -6,6 +6,9 @@
 #'@param dist Valor da distancia entre os pontos em metros
 #'@param plot True ou FALSE para ver o plot do arquivo
 #'
+#'@importFrom units set_units
+#'@import sf
+#'
 #'@examples
 #'polygon_to_random_points(dir_polygon = "./Downloads/Demilitacao_Area.kml",
 #' dist = 100, plot = TRUE)
@@ -14,11 +17,11 @@
 #'@return Returns um arquivo vetorial (ex. KML)
 #'@export
 
-polygon_to_random_points <- function(dir_polygon,Npoints,min_dist, plot = FALSE) {
+polygon_to_random_points <- function(dir_polygon, Npoints, min_dist, borda=20, plot = FALSE) {
 
   pol <- sf::st_read(dir_polygon, quiet = TRUE)
 
-  max_pontos_teoricos <- suppressMessages(as.numeric(sf::st_area(pol) / (pi * (min_dist^2))))
+  max_pontos_teoricos <- suppressMessages(as.numeric(sf::st_area(pol) / (pi * (min_dist^2))+5))
 
   if (Npoints > floor(max_pontos_teoricos)) {
     stop(paste0('Número de pontos solicitado (',Npoints,
@@ -51,8 +54,9 @@ polygon_to_random_points <- function(dir_polygon,Npoints,min_dist, plot = FALSE)
     }
   }
 
+
   generate_random_points <- function(polygon, n, min_dist, max_attempts = 10000) {
-    min_dist <- set_units(min_dist, "m")
+    min_dist <- units::set_units(min_dist, "m")
     selected <- list()
     attempts <- 0
 
@@ -72,13 +76,15 @@ polygon_to_random_points <- function(dir_polygon,Npoints,min_dist, plot = FALSE)
     sf::st_as_sf(do.call(rbind, selected))
   }
 
-  set.seed(251292)
-  pontos_aleatorios <- generate_random_points(pol, n = Npoints, min_dist)
+  pol2 <- sf::st_buffer(pol, -borda)
+  #set.seed(251292)
+  pontos_aleatorios <- generate_random_points(pol2, n = Npoints, min_dist)
 
   if (plot) {
     plot(st_geometry(pol), border = "blue")
     plot(st_geometry(pontos_aleatorios), col = "red", pch = 20, add = TRUE)
   }
+  return(pontos_aleatorios)
 }
 
 

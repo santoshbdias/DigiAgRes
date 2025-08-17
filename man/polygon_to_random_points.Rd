@@ -4,7 +4,13 @@
 \alias{polygon_to_random_points}
 \title{Está função serve para criar pontos a partir de de um poligono}
 \usage{
-polygon_to_random_points(dir_polygon, Npoints, min_dist, plot = FALSE)
+polygon_to_random_points(
+  dir_polygon,
+  Npoints,
+  min_dist,
+  borda = 20,
+  plot = FALSE
+)
 }
 \arguments{
 \item{dir_polygon}{Caminho do arquivo do polígono vetorial}

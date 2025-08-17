@@ -1,54 +1,61 @@
-rm(list = ls()); gc(); graphics.off(); cat("\014")# Atalho equivalente a Ctrl+L
-
-if (!requireNamespace("pacman", quietly = TRUE)) install.packages("pacman")
-pacman::p_load(rvest, dplyr, stringr, tidyr, httr)  # Instalar/ativar pacotes
-
-extrair_info_miguilim <- function(url) {
-  id <- stringr::str_extract(url, "\\d+$")
-
-  res <- tryCatch(httr::GET(url), error = function(e) return(NULL))
-  if (is.null(res) || httr::status_code(res) != 200) return(NULL)
-
-  page <- tryCatch(read_html(httr::content(res, as = "text")), error = function(e) return(NULL))
-  if (is.null(page)) return(NULL)
-
-  tabelas <- page %>% html_elements("table")
-  if (length(tabelas) == 0) return(NULL)
-
-  tds <- tabelas[[1]] %>% html_elements("td") %>% html_text(trim = TRUE)
-  if (length(tds) < 2 || length(tds) %% 2 != 0) return(NULL)
-
-  chaves <- tds[seq(1, length(tds), 2)]
-  valores <- tds[seq(2, length(tds), 2)]
-
-  df <- tibble::tibble(chave = chaves, valor = valores) %>%
-    dplyr::distinct(chave, .keep_all = TRUE) %>%
-    tidyr::pivot_wider(names_from = chave, values_from = valor)
-
-  df$id <- id
-  df$url <- url
-  return(df)
-}
-
-ids <- sprintf("%04d", 3000:9200)#3706:3710
-urls <- paste0("https://miguilim.ibict.br/handle/miguilim/", ids)
-
-dados_revistas <- list()
-for (i in seq_along(urls)) {
-  cat(sprintf("🔍 [%02d/%02d] Coletando ID %s\n", i, length(urls), ids[i]))
-  resultado <- extrair_info_miguilim(urls[i])
-  if (!is.null(resultado)) {
-    dados_revistas[[length(dados_revistas) + 1]] <- resultado
-  }
-}
-
-df_final <- bind_rows(dados_revistas)
-
-write.csv(df_final, file = "S:/OneDrive/Pesquisa/wArquivos/Avaliacao_Revistas/dados_miguilim.csv", fileEncoding = "ISO-8859-1", row.names = T)
-
-
-
-
+# # rm(list = ls()); gc(); graphics.off(); cat("\014")# Atalho equivalente a Ctrl+L
+# #
+# # if (!requireNamespace("pacman", quietly = TRUE)) install.packages("pacman")
+# # pacman::p_load(rvest, dplyr, stringr, tidyr, httr)  # Instalar/ativar pacotes
+# #
+# # extrair_info_miguilim <- function(url) {
+# #   id <- stringr::str_extract(url, "\\d+$")
+# #
+# #   res <- tryCatch(httr::GET(url), error = function(e) return(NULL))
+# #   if (is.null(res) || httr::status_code(res) != 200) return(NULL)
+# #
+# #   page <- tryCatch(read_html(httr::content(res, as = "text")), error = function(e) return(NULL))
+# #   if (is.null(page)) return(NULL)
+# #
+# #   tabelas <- page %>% html_elements("table")
+# #   if (length(tabelas) == 0) return(NULL)
+# #
+# #   tds <- tabelas[[1]] %>% html_elements("td") %>% html_text(trim = TRUE)
+# #   if (length(tds) < 2 || length(tds) %% 2 != 0) return(NULL)
+# #
+# #   chaves <- tds[seq(1, length(tds), 2)]
+# #   valores <- tds[seq(2, length(tds), 2)]
+# #
+# #   df <- tibble::tibble(chave = chaves, valor = valores) %>%
+# #     dplyr::distinct(chave, .keep_all = TRUE) %>%
+# #     tidyr::pivot_wider(names_from = chave, values_from = valor)
+# #
+# #   df$id <- id
+# #   df$url <- url
+# #   return(df)
+# # }
+# #
+# # ids <- sprintf("%04d", 3000:9200)#3706:3710
+# # urls <- paste0("https://miguilim.ibict.br/handle/miguilim/", ids)
+# #
+# # dados_revistas <- list()
+# # for (i in seq_along(urls)) {
+# #   cat(sprintf("🔍 [%02d/%02d] Coletando ID %s\n", i, length(urls), ids[i]))
+# #   resultado <- extrair_info_miguilim(urls[i])
+# #   if (!is.null(resultado)) {
+# #     dados_revistas[[length(dados_revistas) + 1]] <- resultado
+# #   }
+# # }
+# #
+# # df_final <- bind_rows(dados_revistas)
+# #
+# # write.csv(df_final, file = "S:/OneDrive/Pesquisa/wArquivos/Avaliacao_Revistas/dados_miguilim.csv", fileEncoding = "ISO-8859-1", row.names = T)
+# #
+# df <- read.csv2("S:/OneDrive/Pesquisa/wArquivos/Avaliacao_Revistas/dados_miguilim.csv",
+#                 header = TRUE, sep = ",", fileEncoding = "latin1")
+#
+# head(df)
+#
+# #
+# # ##################################################################################################################
+# # ##################################################################################################################
+# #
+# #
 # rm(list = ls()); gc(); graphics.off(); cat("\014")# Atalho equivalente a Ctrl+L
 #
 # if(!require("pacman")) install.packages("pacman");pacman::p_load(
@@ -73,12 +80,16 @@ write.csv(df_final, file = "S:/OneDrive/Pesquisa/wArquivos/Avaliacao_Revistas/da
 # )
 #
 # # Lê todos os arquivos com os mesmos tipos
-# arquivos <- list.files("S:/OneDrive/Pesquisa/wArquivos/Avaliacao_Revistas",
+# arquivos1 <- list.files("S:/OneDrive/Pesquisa/wArquivos/Avaliacao_Revistas/JCR",
 #                        pattern = "Santos H. B.BDias_JCR_JournalResults_06_2025.*csv",
 #                        full.names = TRUE)
 #
+# arquivos2 <- list.files("S:/OneDrive/Pesquisa/wArquivos/Avaliacao_Revistas/wwAreasRevistas",
+#                         pattern = "Santos H. B.BDias_JCR_JournalResults_06_2025.*csv",
+#                         full.names = TRUE)
+#
 # # Lê e une os arquivos de forma robusta
-# dfJCR <- arquivos %>%
+# dfJCR <- arquivos1 %>%
 #   lapply(read_csv, skip = 1, col_types = tipos_jcr) %>%
 #   bind_rows()
 #
@@ -97,17 +108,15 @@ write.csv(df_final, file = "S:/OneDrive/Pesquisa/wArquivos/Avaliacao_Revistas/da
 #   filter(!is.na(ISSN_clean), ISSN_clean != "", ISSN_clean != "N/A") %>%
 # distinct(ISSN_clean, .keep_all = TRUE)
 #
-#
-#
 # #Link plataforma_Sucupira
 # #https://sucupira-legado.capes.gov.br/sucupira/public/consultas/coleta/veiculoPublicacaoQualis/listaConsultaGeralPeriodicos.jsf
 #
 # #classificacoes_publicadas_interdisciplinar_2022_1721678840913.xlsx
-# dfinter <- read_excel('S:/OneDrive/Pesquisa/wArquivos/Avaliacao_Revistas/classificacoes_publicadas_interdisciplinar_2022_1721678840913.xlsx')
+# dfinter <- read_excel('S:/OneDrive/Pesquisa/wArquivos/Avaliacao_Revistas/Qualis/classificacoes_publicadas_interdisciplinar_2022_1721678840913.xlsx')
 # dfinter <- dfinter %>% mutate(ISSN_clean = str_replace_all(ISSN, "-", ""))
 #
 # #classificacoes_publicadas_ciencias_agrarias_i_2022_1721678830314.xls
-# dfagro <- read_excel('S:/OneDrive/Pesquisa/wArquivos/Avaliacao_Revistas/classificacoes_publicadas_ciencias_agrarias_i_2022_1721678830314.xlsx')
+# dfagro <- read_excel('S:/OneDrive/Pesquisa/wArquivos/Avaliacao_Revistas/Qualis/classificacoes_publicadas_ciencias_agrarias_i_2022_1721678830314.xlsx')
 # dfagro <- dfagro %>% mutate(ISSN_clean = str_replace_all(ISSN, "-", ""))
 #
 # # 2. Marca se também está na interdisciplinar
@@ -122,7 +131,7 @@ write.csv(df_final, file = "S:/OneDrive/Pesquisa/wArquivos/Avaliacao_Revistas/da
 #
 # rm(dfagro,dfinter,dfJCR,jcr_eissn,jcr_issn,tipos_jcr, arquivos, issn_inter)
 #
-# writexl::write_xlsx(dfagro_jcr, "C:/Users/server_SantosDias/Downloads/jcr_agro_qualis.xlsx")#Altere aqui o caminho para o seu computador
+# #writexl::write_xlsx(dfagro_jcr, "C:/Users/server_SantosDias/Downloads/jcr_agro_qualis.xlsx")#Altere aqui o caminho para o seu computador
 #
 # head(dfagro_jcr)
 #
@@ -131,49 +140,50 @@ write.csv(df_final, file = "S:/OneDrive/Pesquisa/wArquivos/Avaliacao_Revistas/da
 #   filter(Interdisciplinar == 'SIM' )
 #
 # dfagro_jcr %>%
-#   filter(ISSN_clean == '00068705')
+#   filter(ISSN_clean == '20734395')
 #
-# #qualis_top <- df_qualis %>%
-# #  dplyr::filter(Estrato %in% c("A1", "A2"))
-# #dplyr::filter(df_qualis, grepl("agronomia", Título, ignore.case = TRUE))
-#
-# # 1. Padronizar ISSNs
-# df_qualis <- df_qualis %>%
-#   mutate(ISSN_clean = str_replace_all(ISSN, "-", ""))
-#
-# dfJCR <- dfJCR %>%
-#   mutate(
-#     ISSN_clean = str_replace_all(ISSN, "-", ""),
-#     eISSN_clean = str_replace_all(eISSN, "-", "")
-#   )
-#
-# # 2. Primeiro join pelo ISSN
-# join1 <- left_join(df_qualis, dfJCR, by = "ISSN_clean", relationship = "many-to-many")
-#
-# # 3. Filtrar os que ainda estão sem JIF
-# faltantes <- join1 %>%
-#   filter(is.na(`2024 JIF`)) %>%
-#   select(ISSN_original = ISSN_clean, Título, Estrato, Area)
-#
-# # 4. Fazer um join com o eISSN agora
-# faltantes <- faltantes %>%
-#   mutate(ISSN_original = str_replace_all(ISSN_original, "-", ""))
-#
-# com_eissn <- left_join(faltantes, dfJCR, by = c("ISSN_original" = "eISSN_clean"))
-#
-# # 5. Unir os dados que tinham JIF com os que agora têm por eISSN
-# completos <- join1 %>% filter(!is.na(`2024 JIF`))
-#
-# df_qualis_jcr_final <- bind_rows(completos, com_eissn)
-#
-# # 6. Visualizar e conferir
-# View(df_qualis_jcr_final)
-#
-# # 7. Quantos com JCR agora?
-# sum(!is.na(df_qualis_jcr_final$`2024 JIF`))
-#
-#
-#
-#
-# # Ver quantos tiveram correspondência
-# sum(!is.na(df_qualis_jcr$`2024 JIF`))
+# #
+# # #qualis_top <- df_qualis %>%
+# # #  dplyr::filter(Estrato %in% c("A1", "A2"))
+# # #dplyr::filter(df_qualis, grepl("agronomia", Título, ignore.case = TRUE))
+# #
+# # # 1. Padronizar ISSNs
+# # df_qualis <- df_qualis %>%
+# #   mutate(ISSN_clean = str_replace_all(ISSN, "-", ""))
+# #
+# # dfJCR <- dfJCR %>%
+# #   mutate(
+# #     ISSN_clean = str_replace_all(ISSN, "-", ""),
+# #     eISSN_clean = str_replace_all(eISSN, "-", "")
+# #   )
+# #
+# # # 2. Primeiro join pelo ISSN
+# # join1 <- left_join(df_qualis, dfJCR, by = "ISSN_clean", relationship = "many-to-many")
+# #
+# # # 3. Filtrar os que ainda estão sem JIF
+# # faltantes <- join1 %>%
+# #   filter(is.na(`2024 JIF`)) %>%
+# #   select(ISSN_original = ISSN_clean, Título, Estrato, Area)
+# #
+# # # 4. Fazer um join com o eISSN agora
+# # faltantes <- faltantes %>%
+# #   mutate(ISSN_original = str_replace_all(ISSN_original, "-", ""))
+# #
+# # com_eissn <- left_join(faltantes, dfJCR, by = c("ISSN_original" = "eISSN_clean"))
+# #
+# # # 5. Unir os dados que tinham JIF com os que agora têm por eISSN
+# # completos <- join1 %>% filter(!is.na(`2024 JIF`))
+# #
+# # df_qualis_jcr_final <- bind_rows(completos, com_eissn)
+# #
+# # # 6. Visualizar e conferir
+# # View(df_qualis_jcr_final)
+# #
+# # # 7. Quantos com JCR agora?
+# # sum(!is.na(df_qualis_jcr_final$`2024 JIF`))
+# #
+# #
+# #
+# #
+# # # Ver quantos tiveram correspondência
+# # sum(!is.na(df_qualis_jcr$`2024 JIF`))

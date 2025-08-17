@@ -132,7 +132,7 @@ Essa função permitirá gerar pontos aleatórios dentro de um polígono, respei
 
 random_points <- polygon_to_random_points(
   dir_polygon = "C:/Users/SantosDias/Documents/outra_area.kml",#Altere aqui o caminho para o seu computador
-  n = 50, #Número de pontos para plotar na área
+  Npoints = 50, #Número de pontos para plotar na área
   min_dist = 30, #Distância mínima entre os pontos
   plot = TRUE
 )
@@ -143,15 +143,26 @@ sf::st_write(random_points, "C:/Users/SantosDias/Documents/pontos_aleatorios.shp
 
 
 
-### 5. Baixar dados do modelo Topodata para um vetor
+### 5. Baixar dados do modelo Topodata para um vetor, e criar curvas de nível
 
 ``` r
 
-TopoData_download_to_vector(
-  area_kml = "Caminho/para/area.kml",
-  layer = "ALTITUDE",
-  path_out = "Caminho/saida/"
-)
+rm(list = ls()); gc(); graphics.off(); cat("\014")# Atalho equivalente a Ctrl+L
+
+if(!require("pacman")) install.packages("pacman");pacman::p_load(
+  DigiAgRes, dplyr, sf, terra)  # Instalar/ativar pacotes
+
+kml <- sf::st_read("C:/Users/server_SantosDias/Downloads/area.kml", quiet = TRUE)
+
+raster_altitude<-TopoData_download_to_vector(
+  vector = kml,
+  layer = "Altitude")
+
+curvas <- criar_curvas_nivel(raster_altitude, kml, buffer_dist = 100, intervalo = 1, ajust = T))
+
+st_write(curvas, "C:/Users/SantosDias/Downloads/curvas.kml", driver = "KML", delete_dsn = TRUE)
+
+  
 ```
 
 ### 6.️ Análise automática de radar meteorológico e envio de alertas por Telegram
@@ -234,8 +245,12 @@ repeat {
 
 ## 👨‍💻 Autor
 
-Desenvolvido pelo Prof. Dr. Santos Henrique Brant Dias<br> 
-Pesquisador Agricultura Digital no Manejo e Conservação do Solo e da Água<br> 
+Desenvolvido pelo Prof. Dr. Santos Henrique Brant Dias;<br> 
+Pesquisador Agricultura Digital no Manejo e Conservação do Solo e da Água;<br> 
+Téc. Agropecuária - IFNMG;
+Eng. Agronômo - UFV;
+Msc. Eng. Agrícola - UFV;
+Dr. Agronomia - UEPG.
 
 Para mais informações: <https://www.santoshbdias.com.br/><br>
 

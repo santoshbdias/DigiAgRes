@@ -4,7 +4,7 @@
 \alias{TopoData_download_to_vector}
 \title{Está função serve para fazer o download de dados de estações da wunderground}
 \usage{
-TopoData_download_to_vector(vector, pathdow)
+TopoData_download_to_vector(vector, layer = "Altitude")
 }
 \arguments{
 \item{vector}{Caminho do arquivo do polígono vetorial}
@@ -15,12 +15,10 @@ TopoData_download_to_vector(vector, pathdow)
 Raster do TopoData
 }
 \description{
-Função faz o download de dados meteorológicos wunderground.
+Função faz o download do TOPODATA INPE. Pode ser feito o download das seguintes variavéis: Altitude, Declividade, RelevoSombreado, Orientação, FormaTerreno, DivisoresTalvegues, Curv.Vertical, Curv.Horizontal
 }
 \examples{
-TopoData_download_to_vector("C:/Users/server_SantosDias/Downloads/Demilitacao_Area.kml",
-"C:/Users/server_SantosDias/Downloads")
-
+Altitude <- TopoData_download_to_vector(vector = "C:/User/Downloads/area.kml", layer = "Altitude")
 
 }
 \author{
