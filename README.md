@@ -48,7 +48,7 @@ Underground:
 
 ``` r
 #Comandos para limpar completamente o R, tudo aberto e o que já rodou.
-rm(list = ls()); gc(); graphics.off(); cat("\014")# Atalho equivalente a Ctrl+L
+rm(list = ls()); gc(); graphics.off(); cat("\014")#Limpar todos os dados e abas
 
 library(DigiAgRes)
 
@@ -79,7 +79,7 @@ A função *calc_eto_fao56()* realiza o cálculo da evapotranspiração de refer
 
 ```r
 #Comandos para limpar completamente o R, tudo aberto e o que já rodou.
-rm(list = ls()); gc(); graphics.off(); cat("\014")# Atalho equivalente a Ctrl+L
+rm(list = ls()); gc(); graphics.off(); cat("\014")#Limpar todos os dados e abas
 
 library(DigiAgRes)
 
@@ -147,7 +147,7 @@ sf::st_write(random_points, "C:/Users/SantosDias/Documents/pontos_aleatorios.shp
 
 ``` r
 
-rm(list = ls()); gc(); graphics.off(); cat("\014")# Atalho equivalente a Ctrl+L
+rm(list = ls()); gc(); graphics.off(); cat("\014")#Limpar todos os dados e abas
 
 if(!require("pacman")) install.packages("pacman");pacman::p_load(
   DigiAgRes, dplyr, sf, terra)  # Instalar/ativar pacotes
