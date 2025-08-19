@@ -158,7 +158,7 @@ raster_altitude<-TopoData_download_to_vector(
   vector = kml,
   layer = "Altitude")
 
-curvas <- criar_curvas_nivel(raster_altitude, kml, buffer_dist = 100, intervalo = 1, ajust = T))
+curvas <- criar_curvas_nivel(raster_altitude, kml, buffer_dist = 100, intervalo = 1, ajust = T)
 
 st_write(curvas, "C:/Users/SantosDias/Downloads/curvas.kml", driver = "KML", delete_dsn = TRUE)
 
