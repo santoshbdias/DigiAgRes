@@ -152,14 +152,24 @@ rm(list = ls()); gc(); graphics.off(); cat("\014")#Limpar todos os dados e abas
 if(!require("pacman")) install.packages("pacman");pacman::p_load(
   DigiAgRes, dplyr, sf, terra)  # Instalar/ativar pacotes
 
+#Abrir o arquivo kml no R
 kml <- sf::st_read("C:/Users/server_SantosDias/Downloads/area.kml", quiet = TRUE)
 
+plot(kml)#Para plotar o kml e ver o contorno na tela
+
+#Faz o download do arquivo do INPE
 raster_altitude<-TopoData_download_to_vector(
   vector = kml,
   layer = "Altitude")
 
+plot(raster_altitude)
+
+#Cria as curvas de nivel a partir do arquivo raster
 curvas <- criar_curvas_nivel(raster_altitude, kml, buffer_dist = 100, intervalo = 1, ajust = T)
 
+plot(curvas)
+
+#Cria arquivo kml a partir das curvas geradas
 st_write(curvas, "C:/Users/SantosDias/Downloads/curvas.kml", driver = "KML", delete_dsn = TRUE)
 
   
