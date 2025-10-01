@@ -53,7 +53,7 @@ executar_alerta_telegram <- function(mega="Cianorte", img_plot, chat_id, bot_tok
     "Chuva leve (amarelo)"
   } else {'Sem chuva'}
 
-  if (resultado %in% c("Chuva leve (amarelo)", "Chuva forte (vermelho)", 'Sem chuva')) {
+  if (resultado %in% c("Chuva leve (amarelo)", "Chuva forte (vermelho)")) {
     legenda <- paste0("🚨 Alerta meteorológico em *", mega, "*:\n", resultado)
 
     arquivo_img <- tempfile(fileext = ".png")
