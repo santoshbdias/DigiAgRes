@@ -185,7 +185,7 @@ if(!require("pacman")) install.packages("pacman");pacman::p_load(
   DigiAgRes,httr, jsonlite, magick,purrr)  # Instalar/ativar pacotes
 
 #Para descobrir o token do bot, ou até criar o bot, busque BotFather no Telegram
-bot_token <- "7935384745:MJUHT5JvZdH6qCnpfPrMEi-plgrVMHEx_Eo8"
+bot_token <- "7935568945:MJUHT5JvZdH6qCnpfPrMEi-plgrVMHEx_Eo8"
 
 #Para descobrir o chat id do grupo que seu bot entrou (Precisa mandar mensagem no grupo depois que adicionar o bot):
 resposta <- httr::GET(
@@ -204,8 +204,8 @@ repeat {
   
   #ID do chat do telegram
   area <- list(
-    'Cianorte' = -4837967819,
-    'Castelo'  = -4857864372 )
+    'Cianorte' = -4458667819,
+    'Castelo'  = -4567364372 )
   
     if (format(Sys.time(), "%H:%M")=='13:00') {
       for (i in 1:2) {
