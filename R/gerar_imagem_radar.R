@@ -65,5 +65,24 @@ gerar_imagem_radar <- function(cidade, raio) {
     }
 
   dev.off()
+
+  # Detectar pasta de Downloads
+  downloads_dir <- switch(Sys.info()[["sysname"]],
+                          "Windows" = file.path(Sys.getenv("USERPROFILE"), "Downloads"),
+                          "Darwin"  = file.path(Sys.getenv("HOME"), "Downloads"),  # macOS
+                          "Linux"   = file.path(Sys.getenv("HOME"), "Downloads"))   # Linux
+
+
+  pasta_saida <- file.path(downloads_dir, "Radar.Simepar")
+
+  if (!dir.exists(pasta_saida)) dir.create(pasta_saida, recursive = TRUE)
+
+  caminho <- paste0(pasta_saida,'/',cidade,'.png')
+
+  # Excluir arquivos zip corrompidos
+  if (file.exists(caminho)) file.remove(caminho)
+
+  magick::image_write(img_plot, path = caminho, format = "png")
+
   return(img_plot)
 }

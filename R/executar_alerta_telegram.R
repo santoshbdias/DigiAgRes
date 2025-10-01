@@ -19,7 +19,7 @@
 #' @author Santos Henrique Brant Dias
 #' @export
 
-executar_alerta_telegram <- function(mega="Cianorte", img_plot, chat_id, bot_token, raio = 50) {
+executar_alerta_telegram <- function(mega="Cianorte", chat_id, bot_token, raio = 50) {
 
   # Coordenadas conhecidas
   coords <- list(
@@ -49,22 +49,27 @@ executar_alerta_telegram <- function(mega="Cianorte", img_plot, chat_id, bot_tok
   # Classificação
   resultado <- if (rgb_Res$R > 80 & rgb_Res$B < 30) {
     "Chuva forte (vermelho)"
-  } else if (rgb_Res$G > 70 & rgb_Res$R > 60) {
+  } else if (rgb_Res$G > 70 & rgb_Res$R > 50) {
     "Chuva leve (amarelo)"
   } else {'Sem chuva'}
 
   if (resultado %in% c("Chuva leve (amarelo)", "Chuva forte (vermelho)")) {
     legenda <- paste0("🚨 Alerta meteorológico em *", mega, "*:\n", resultado)
 
-    arquivo_img <- tempfile(fileext = ".png")
-    magick::image_write(img_plot, path = arquivo_img, format = "png")
+    # Detectar pasta de Downloads
+    downloads_dir <- switch(Sys.info()[["sysname"]],
+                            "Windows" = file.path(Sys.getenv("USERPROFILE"), "Downloads"),
+                            "Darwin"  = file.path(Sys.getenv("HOME"), "Downloads"),  # macOS
+                            "Linux"   = file.path(Sys.getenv("HOME"), "Downloads"))   # Linux
+
+    caminho <- paste0(downloads_dir, '/', "Radar.Simepar",'/',mega,'.png')
 
     # Enviar imagem via Telegram
     httr::POST(
       url = paste0("https://api.telegram.org/bot", bot_token, "/sendPhoto"),
       body = list(
         chat_id = chat_id,
-        photo = httr::upload_file(arquivo_img),
+        photo = httr::upload_file(caminho),
         caption = legenda,
         parse_mode = "Markdown"
       )

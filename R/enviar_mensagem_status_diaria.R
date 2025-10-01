@@ -29,23 +29,39 @@
 #' @author Santos Henrique Brant Dias
 #' @export
 
-enviar_mensagem_status_diaria <- function(hora_alerta='13:00', img_plot, bot_token, chat_id,
+enviar_mensagem_status_diaria <- function(hora_alerta='13:00', bot_token, chat_id,
                                           mensagem = 'Mensagem diária de status. Sistema de alerta meteorológico ativo e funcionando perfeitamente.') {
+  radar_img <- tryCatch(
+    DigiAgRes::baixar_radar_PR(),
+    error = function(e) {
+      cat("\u274c Erro ao baixar imagem do radar: ", conditionMessage(e), "\n")
+      return(NULL)
+    }
+  )
+
   hora_atual <- format(Sys.time(), "%H:%M")
 
   if (hora_atual != hora_alerta) {
     return(invisible(NULL))
   }
 
-  if (is.null(img_plot)) {
-    cat("⚠️ Imagem do radar não disponível para envio da mensagem diária.\n")
-    return(invisible(NULL))
-  }
+  # Detectar pasta de Downloads
+  downloads_dir <- switch(Sys.info()[["sysname"]],
+                          "Windows" = file.path(Sys.getenv("USERPROFILE"), "Downloads"),
+                          "Darwin"  = file.path(Sys.getenv("HOME"), "Downloads"),  # macOS
+                          "Linux"   = file.path(Sys.getenv("HOME"), "Downloads"))   # Linux
 
-  caminho_imagem <- tempfile(fileext = ".png")
+  pasta_saida <- file.path(downloads_dir, "Radar.Simepar")
+
+  if (!dir.exists(pasta_saida)) dir.create(pasta_saida, recursive = TRUE)
+
+  caminho <- paste0(pasta_saida,'/Status.png')
+
+  # Excluir arquivos zip corrompidos
+  if (file.exists(caminho)) file.remove(caminho)
 
   img_salva <- tryCatch({
-    magick::image_write(img_plot, path = caminho_imagem, format = "png")
+    magick::image_write(radar_img, path = caminho, format = "png")
     TRUE
   }, error = function(e) {
     cat("❌ Erro ao salvar imagem: ", conditionMessage(e), "\n")
@@ -59,7 +75,7 @@ enviar_mensagem_status_diaria <- function(hora_alerta='13:00', img_plot, bot_tok
       url = paste0("https://api.telegram.org/bot", bot_token, "/sendPhoto"),
       body = list(
         chat_id = chat_id,
-        photo = httr::upload_file(caminho_imagem),
+        photo = httr::upload_file(caminho),
         caption = mensagem,
         parse_mode = "Markdown"
       )

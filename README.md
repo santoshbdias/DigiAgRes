@@ -188,6 +188,7 @@ if(!require("pacman")) install.packages("pacman");pacman::p_load(
 bot_token <- "7935568945:MJUHT5JvZdH6qCnpfPrMEi-plgrVMHEx_Eo8"
 
 #Para descobrir o chat id do grupo que seu bot entrou (Precisa mandar mensagem no grupo depois que adicionar o bot):
+#Executar apenas uma vez para descobrir os IDs
 resposta <- httr::GET(
   url = paste0("https://api.telegram.org/bot", bot_token, "/getUpdates")
 ); conteudo <- httr::content(resposta, as = "parsed")
@@ -195,7 +196,7 @@ resposta <- httr::GET(
 conteudo$result |>
   purrr::map(~ .x$my_chat_member$chat$id %||% .x$message$chat$id)
 
-raio=45
+raio=50
 
 repeat {
   minuto <- as.numeric(format(Sys.time(), "%M"))
@@ -204,15 +205,16 @@ repeat {
   
   #ID do chat do telegram
   area <- list(
-    'Cianorte' = -4458667819,
-    'Castelo'  = -4567364372 )
+    'Cianorte' = -4775392167,
+    'Castelo'  = -4862682148)
   
-    if (format(Sys.time(), "%H:%M")=='13:00') {
+    if (format(Sys.time(), "%H:%M")=='13:03') {
       for (i in 1:2) {
-      enviar_mensagem_status_diaria(hora_alerta='13:00', img_plot, bot_token, area[[i]],
+        enviar_mensagem_status_diaria(hora_alerta='13:03', bot_token, area[[i]],
                                     "Mensagem diária de status. Sistema de alerta meteorológico ativo e funcionando perfeitamente.")
-      Sys.sleep(60)  # Aguarda 1 minuto para evitar múltiplos envios
-    }}
+      }
+      Sys.sleep(420)  # Aguarda 1 minuto para evitar múltiplos envios
+    }
     
     #Verifica se é hora de rodar a função principal, se o minuto termina em 3
     if (minuto %% 10 == 3) {
@@ -221,14 +223,13 @@ repeat {
       
       #cidade=names(area[i])
       
-      img_plot <- gerar_imagem_radar(names(area[i]), raio)
+        img_plot <- gerar_imagem_radar(names(area[i]), raio)
       
       if (!is.null(img_plot)) print(img_plot)
       
         tryCatch({
           executar_alerta_telegram(
             mega = names(area[i]),
-            img_plot = img_plot,
             chat_id = area[[i]],
             bot_token = bot_token,
             raio=raio
@@ -239,7 +240,7 @@ repeat {
         })
       }
       # Espera 6 minutos antes de checar de novo
-      Sys.sleep(360)
+      Sys.sleep(420)
       }
   # Espera 30 segundos antes de checar de novo
   Sys.sleep(30)
