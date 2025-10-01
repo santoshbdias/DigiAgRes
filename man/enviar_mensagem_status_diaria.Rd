@@ -6,7 +6,6 @@
 \usage{
 enviar_mensagem_status_diaria(
   hora_alerta = "13:00",
-  img_plot,
   bot_token,
   chat_id,
   mensagem =
@@ -16,11 +15,11 @@ enviar_mensagem_status_diaria(
 \arguments{
 \item{hora_alerta}{Horário programado para envio da mensagem (formato "HH:MM"). Default: "13:00".}
 
-\item{img_plot}{Objeto de imagem gerado por \code{magick::image_draw()}, contendo o radar com marcações.}
-
 \item{bot_token}{Token do bot do Telegram obtido via \code{@BotFather}.}
 
 \item{chat_id}{ID do chat ou grupo do Telegram que receberá a mensagem.}
+
+\item{img_plot}{Objeto de imagem gerado por \code{magick::image_draw()}, contendo o radar com marcações.}
 }
 \value{
 Retorna \code{NULL} de forma invisível. Utiliza efeitos colaterais (envio de mensagem).
