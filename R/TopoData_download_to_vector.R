@@ -16,7 +16,7 @@
 #'@return Raster do TopoData
 #'@export
 
-TopoData_download_to_vector <- function(vector, layer = "Altitude"){
+TopoData_download_to_vector <- function(vector, layer = "Declividade"){
 
   if (inherits(vector, "sf")) {
     area <- vector
@@ -75,40 +75,56 @@ TopoData_download_to_vector <- function(vector, layer = "Altitude"){
 
   if (!dir.exists(pasta_saida)) dir.create(pasta_saida, recursive = TRUE)
 
-  # Nome base para buscar .tif
-  prefixo <- tools::file_path_sans_ext(basename(destino))
-  arquivo_tif <- list.files(
-    pasta_saida,
-    pattern = paste0("^", prefixo, "\\.tif$"),
-    full.names = TRUE
-  )
-
-  # Se não existe o ZIP → baixa
-  if (!file.exists(destino)) {
-    message("⬇️ Baixando tile: ", basename(link_zip))
-    download.file(link_zip, destfile = destino, mode = "wb", quiet = TRUE)
-  } else {
-    message("✅ Arquivo ZIP já existe. Download ignorado.")
-  }
-
-  # Se não existe o TIF correspondente → descompacta
-  if (length(arquivo_tif) == 0) {
-    message("📂 Descompactando: ", basename(destino))
-    unzip(destino, exdir = pasta_saida)
+  for (px in 1:length(destino)) {
+    prefixo <- tools::file_path_sans_ext(basename(destino[px]))
 
     arquivo_tif <- list.files(
       pasta_saida,
       pattern = paste0("^", prefixo, "\\.tif$"),
       full.names = TRUE
     )
+
+    if (length(arquivo_tif) == 0) {
+    # Excluir arquivos zip corrompidos
+    if (file.exists(destino[px])) {
+      base::file.remove(destino[px])
+      base::message("Arquivo ",prefixo,'.zip'," removido")
+    }
+
+    # Se não existe o ZIP → baixa
+    if (!file.exists(destino[px])) {
+      message("⬇️ Baixando tile: ", basename(link_zip[px]))
+      utils::download.file(link_zip[px], destfile = destino[px], mode = "wb", quiet = TRUE)
+    }
+
+    # Se não existe o TIF correspondente → descompacta
+
+    message("📂 Descompactando: ", basename(destino[px]))
+    utils::unzip(destino[px], exdir = pasta_saida)
+    }
   }
 
-  if (length(arquivo_tif) == 0) {
-    stop("❌ Nenhum .tif correspondente foi encontrado após descompactar.")
+  arquivos_tifs_Vector <- list.files(
+    pasta_saida,
+    pattern = paste0("^(", paste0(tools::file_path_sans_ext(basename(destino)), collapse = "|"), ")\\.tif$"),
+    full.names = TRUE
+  )
+
+  # Abre todos como lista de SpatRaster
+  rasters <- lapply(arquivos_tifs_Vector, terra::rast)
+
+  # Verifica quantidade e faz merge se necessário
+  if (length(rasters) > 1) {
+    # Mais de um raster → faz merge
+    dem <- do.call(terra::merge, rasters)
+  } else if (length(rasters) == 1) {
+    # Apenas um raster → usa direto
+    dem <- rasters[[1]]
+  } else {
+    stop("Nenhum arquivo raster encontrado na pasta destino, TOPODATA em download!")
   }
 
-  # Abrir o raster certo
-  dem <- terra::rast(arquivo_tif)#Abrir o raster
+  terra::crs(dem) <- "EPSG:4618"
 
   return(dem)
 }

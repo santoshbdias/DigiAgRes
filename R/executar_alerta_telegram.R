@@ -44,46 +44,27 @@ executar_alerta_telegram <- function(mega="Cianorte", img_plot, chat_id, bot_tok
     return(invisible(NULL))
   }
 
-  rgb_Res <- analisar_radar_PR(img, mega = mega, raio)
+  rgb_Res <- DigiAgRes::analisar_radar_PR(img, mega = mega, raio)
 
   # Classificação
-  resultado <- if (rgb_Res$R > 70 & rgb_Res$B < 30) {
+  resultado <- if (rgb_Res$R > 80 & rgb_Res$B < 30) {
     "Chuva forte (vermelho)"
   } else if (rgb_Res$G > 70 & rgb_Res$R > 60) {
     "Chuva leve (amarelo)"
-  } else if (rgb_Res$G > 70) {
-    "Risco de chuva (verde)"
-  } else {
-    "Sem chuvas"
-  }
+  } else {'Sem chuva'}
 
-  if (resultado %in% c("Risco de chuva (verde)", "Chuva leve (amarelo)", "Chuva forte (vermelho)")) {
+  if (resultado %in% c("Chuva leve (amarelo)", "Chuva forte (vermelho)", 'Sem chuva')) {
     legenda <- paste0("🚨 Alerta meteorológico em *", mega, "*:\n", resultado)
 
-    # Desenhar pontos no mapa
-    caminho_imagem <- tempfile(fileext = ".png")
-
-    magick::image_write(img_plot, path = caminho_imagem, format = "png")
-
-  # if (!is.null(img)) {
-  #   img_plot <- image_draw(img)
-  #     x <- coords[[mega]]$x
-  #     y <- coords[[mega]]$y
-  #     points(x, y, col = "red", pch = 19, cex = 1)
-  #     points(x + raio, y, col = "purple", pch = 19, cex = 1)
-  #     points(x - raio, y, col = "purple", pch = 19, cex = 1)
-  #     points(x, y + raio, col = "purple", pch = 19, cex = 1)
-  #     points(x, y - raio, col = "purple", pch = 19, cex = 1)
-  #   dev.off()
-  # }
-  #   print(img_plot)
+    arquivo_img <- tempfile(fileext = ".png")
+    magick::image_write(img_plot, path = arquivo_img, format = "png")
 
     # Enviar imagem via Telegram
     httr::POST(
       url = paste0("https://api.telegram.org/bot", bot_token, "/sendPhoto"),
       body = list(
         chat_id = chat_id,
-        photo = httr::upload_file(caminho_imagem),
+        photo = httr::upload_file(arquivo_img),
         caption = legenda,
         parse_mode = "Markdown"
       )

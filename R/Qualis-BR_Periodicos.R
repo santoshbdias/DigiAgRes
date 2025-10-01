@@ -140,7 +140,7 @@
 #   filter(Interdisciplinar == 'SIM' )
 #
 # dfagro_jcr %>%
-#   filter(ISSN_clean == '20734395')
+#   filter(ISSN_clean == '16968352')
 #
 # #
 # # #qualis_top <- df_qualis %>%

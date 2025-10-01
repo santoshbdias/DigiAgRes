@@ -4,7 +4,7 @@
 \alias{TopoData_download_to_vector}
 \title{Está função serve para fazer o download de dados de estações da wunderground}
 \usage{
-TopoData_download_to_vector(vector, layer = "Altitude")
+TopoData_download_to_vector(vector, layer = "Declividade")
 }
 \arguments{
 \item{vector}{Caminho do arquivo do polígono vetorial}

@@ -4,12 +4,12 @@
 \alias{gerar_imagem_radar}
 \title{Gera imagem do radar meteorológico com marcações circulares e retorna imagem editada}
 \usage{
-gerar_imagem_radar(coords, raio)
+gerar_imagem_radar(cidade, raio)
 }
 \arguments{
-\item{coords}{Lista com coordenadas nomeadas das cidades. Exemplo: list("Cianorte" = list(x=388, y=240))}
-
 \item{raio}{Raio da área de análise em pixels (default: 40)}
+
+\item{coords}{Lista com coordenadas nomeadas das cidades. Exemplo: list("Cianorte" = list(x=388, y=240))}
 }
 \value{
 Objeto de imagem com as marcações, ou NULL se houver falha no download

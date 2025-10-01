@@ -179,71 +179,71 @@ st_write(curvas, "C:/Users/SantosDias/Downloads/curvas.kml", driver = "KML", del
 O DigiAgRes permite baixar a imagem mais recente do radar meteorológico do Simepar, analisar a presença de chuva em uma região de interesse (com base na cor da imagem) e enviar alertas por e-mail sempre que uma condição meteorológica for detectada. Isso pode ser automatizado com um loop que roda a cada 10 minutos.
 
 ``` r
+rm(list = ls()); gc(); graphics.off(); cat("\014")#Limpar todos os dados e abas
+
 if(!require("pacman")) install.packages("pacman");pacman::p_load(
   DigiAgRes,httr, jsonlite, magick,purrr)  # Instalar/ativar pacotes
 
 #Para descobrir o token do bot, ou até criar o bot, busque BotFather no Telegram
-bot_token <- "7968534845:AAETdjrjtykjtrjktrkm4ttrykjkg856Eo8"
+bot_token <- "7935384745:MJUHT5JvZdH6qCnpfPrMEi-plgrVMHEx_Eo8"
 
-#Para descobrir o chat id do grupo que seu bot entrou:
+#Para descobrir o chat id do grupo que seu bot entrou (Precisa mandar mensagem no grupo depois que adicionar o bot):
 resposta <- httr::GET(
   url = paste0("https://api.telegram.org/bot", bot_token, "/getUpdates")
-)
-
-conteudo <- content(resposta, as = "parsed")
-
+); conteudo <- httr::content(resposta, as = "parsed")
 # Ver chat_id dos grupos
 conteudo$result |>
   purrr::map(~ .x$my_chat_member$chat$id %||% .x$message$chat$id)
-
-chat_id <- '-48767525577'
 
 raio=45
 
 repeat {
   minuto <- as.numeric(format(Sys.time(), "%M"))
-
+  
   cat(format(Sys.time(), "%H:%M"), "- Verificando horário...\n")
-
-  coords <- list(
-    'Cianorte' = list(x = 388, y = 240),
-    'Castelo'  = list(x = 437, y = 190)
-  )
-
-  if (format(Sys.time(), "%H:%M")=='13:00') {
-  enviar_mensagem_status_diaria(hora_alerta='13:00', img_plot, bot_token, chat_id,
-                                "Mensagem diária de status. Sistema de alerta meteorológico ativo e funcionando perfeitamente.")
-  Sys.sleep(60)  # Aguarda 1 minuto para evitar múltiplos envios
-  }
-
-  #Verifica se é hora de rodar a função principal, se o minuto termina em 3
-  if (minuto %% 10 == 3) {
-    cat(format(Sys.time(), "%Y-%m-%d %H:%M"), "- Executando...\n")
-
-    img_plot <- gerar_imagem_radar(coords, raio)
-
-    if (!is.null(img_plot)) print(img_plot)
-
-    for (g in 1:length(names(coords))) {
-      tryCatch({
-        executar_alerta_telegram(
-          mega = names(coords)[g],
-          img_plot = img_plot,
-          chat_id = chat_id,
-          bot_token = bot_token,
-          raio=raio
-        )
-        print(img_plot)
-      }, error = function(e) {
-        cat("\\u274C"," Erro ao executar alerta para ", names(coords)[g], ": ", conditionMessage(e), "\n")
-      })
-    }
-    # Espera 6 minutos antes de checar de novo
-    Sys.sleep(360)
-  }
+  
+  #ID do chat do telegram
+  area <- list(
+    'Cianorte' = -4837967819,
+    'Castelo'  = -4857864372 )
+  
+    if (format(Sys.time(), "%H:%M")=='13:00') {
+      for (i in 1:2) {
+      enviar_mensagem_status_diaria(hora_alerta='13:00', img_plot, bot_token, area[[i]],
+                                    "Mensagem diária de status. Sistema de alerta meteorológico ativo e funcionando perfeitamente.")
+      Sys.sleep(60)  # Aguarda 1 minuto para evitar múltiplos envios
+    }}
+    
+    #Verifica se é hora de rodar a função principal, se o minuto termina em 3
+    if (minuto %% 10 == 3) {
+      for (i in 1:2) {
+      cat(format(Sys.time(), "%Y-%m-%d %H:%M"), "- Executando...\n")
+      
+      #cidade=names(area[i])
+      
+      img_plot <- gerar_imagem_radar(names(area[i]), raio)
+      
+      if (!is.null(img_plot)) print(img_plot)
+      
+        tryCatch({
+          executar_alerta_telegram(
+            mega = names(area[i]),
+            img_plot = img_plot,
+            chat_id = area[[i]],
+            bot_token = bot_token,
+            raio=raio
+          )
+          print(img_plot)
+        }, error = function(e) {
+          cat("\\u274C"," Erro ao executar alerta para ", names(coords)[g], ": ", conditionMessage(e), "\n")
+        })
+      }
+      # Espera 6 minutos antes de checar de novo
+      Sys.sleep(360)
+      }
   # Espera 30 segundos antes de checar de novo
   Sys.sleep(30)
-}
+  }
 
 
 ``` 
