@@ -4,7 +4,7 @@
 \alias{analisar_radar_PR}
 \title{Analisa a cor média em uma região circular do radar e interpreta intensidade de chuva}
 \usage{
-analisar_radar_PR(img, mega = "Castelo", raio)
+analisar_radar_PR(img, mega = "PresidenteCasteloBranco", raio)
 }
 \arguments{
 \item{img}{Imagem de radar obtida pela função \code{baixar_radar_PR()}.}

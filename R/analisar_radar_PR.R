@@ -20,11 +20,11 @@
 #' @author Santos Henrique Brant Dias
 #' @export
 
-analisar_radar_PR <- function(img, mega='Castelo', raio) {
+analisar_radar_PR <- function(img, mega='PresidenteCasteloBranco', raio) {
 
   coords <- list(
     'Cianorte' = list(x = 388, y = 240),
-    'Castelo'  = list(x = 437, y = 190),
+    'PresidenteCasteloBranco'  = list(x = 437, y = 190),
     'PontaGrossa' = list(x = 613, y = 361),
     'Cambé' = list(x = 509, y = 185),
     'Guarapuava' = list(x = 483, y = 405),

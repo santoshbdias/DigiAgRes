@@ -26,6 +26,22 @@
 #' @export
 
 gerar_imagem_radar <- function(cidade, raio) {
+
+  # Detectar pasta de Downloads
+  downloads_dir <- switch(Sys.info()[["sysname"]],
+                          "Windows" = file.path(Sys.getenv("USERPROFILE"), "Downloads"),
+                          "Darwin"  = file.path(Sys.getenv("HOME"), "Downloads"),  # macOS
+                          "Linux"   = file.path(Sys.getenv("HOME"), "Downloads"))   # Linux
+
+  pasta_saida <- file.path(downloads_dir, "Radar.Simepar")
+
+  if (!dir.exists(pasta_saida)) dir.create(pasta_saida, recursive = TRUE)
+
+  caminho <- paste0(pasta_saida,'/',cidade,'.png')
+
+  # Excluir arquivos png que já existe
+  if (file.exists(caminho)) file.remove(caminho)
+
   radar_img <- tryCatch(
     DigiAgRes::baixar_radar_PR(),
     error = function(e) {
@@ -38,7 +54,7 @@ gerar_imagem_radar <- function(cidade, raio) {
 
   coords <- list(
     'Cianorte' = list(x = 388, y = 240),
-    'Castelo'  = list(x = 437, y = 190),
+    'PresidenteCasteloBranco'  = list(x = 437, y = 190),
     'PontaGrossa' = list(x = 613, y = 361),
     'Cambé' = list(x = 509, y = 185),
     'Guarapuava' = list(x = 483, y = 405),
@@ -63,24 +79,7 @@ gerar_imagem_radar <- function(cidade, raio) {
         points(x, y, col = "royalblue1", pch = 19, cex = vri)
       }
     }
-
   dev.off()
-
-  # Detectar pasta de Downloads
-  downloads_dir <- switch(Sys.info()[["sysname"]],
-                          "Windows" = file.path(Sys.getenv("USERPROFILE"), "Downloads"),
-                          "Darwin"  = file.path(Sys.getenv("HOME"), "Downloads"),  # macOS
-                          "Linux"   = file.path(Sys.getenv("HOME"), "Downloads"))   # Linux
-
-
-  pasta_saida <- file.path(downloads_dir, "Radar.Simepar")
-
-  if (!dir.exists(pasta_saida)) dir.create(pasta_saida, recursive = TRUE)
-
-  caminho <- paste0(pasta_saida,'/',cidade,'.png')
-
-  # Excluir arquivos zip corrompidos
-  if (file.exists(caminho)) file.remove(caminho)
 
   magick::image_write(img_plot, path = caminho, format = "png")
 

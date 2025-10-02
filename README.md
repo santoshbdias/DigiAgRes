@@ -205,15 +205,15 @@ repeat {
   
   #ID do chat do telegram
   area <- list(
-    'Cianorte' = -4775392167,
-    'Castelo'  = -4862682148)
+    'Cianorte' = -4791292167,
+    'PresidenteCasteloBranco'  = -4941682148)
   
     if (format(Sys.time(), "%H:%M")=='13:03') {
       for (i in 1:2) {
         enviar_mensagem_status_diaria(hora_alerta='13:03', bot_token, area[[i]],
                                     "Mensagem diária de status. Sistema de alerta meteorológico ativo e funcionando perfeitamente.")
       }
-      Sys.sleep(420)  # Aguarda 1 minuto para evitar múltiplos envios
+      Sys.sleep(30)  # Aguarda 1 minuto para evitar múltiplos envios
     }
     
     #Verifica se é hora de rodar a função principal, se o minuto termina em 3
@@ -221,11 +221,7 @@ repeat {
       for (i in 1:2) {
       cat(format(Sys.time(), "%Y-%m-%d %H:%M"), "- Executando...\n")
       
-      #cidade=names(area[i])
-      
-        img_plot <- gerar_imagem_radar(names(area[i]), raio)
-      
-      if (!is.null(img_plot)) print(img_plot)
+        print(gerar_imagem_radar(names(area[i]), raio))
       
         tryCatch({
           executar_alerta_telegram(
@@ -234,12 +230,11 @@ repeat {
             bot_token = bot_token,
             raio=raio
           )
-          print(img_plot)
         }, error = function(e) {
           cat("\\u274C"," Erro ao executar alerta para ", names(coords)[g], ": ", conditionMessage(e), "\n")
         })
       }
-      # Espera 6 minutos antes de checar de novo
+      # Espera 7 minutos antes de checar de novo
       Sys.sleep(420)
       }
   # Espera 30 segundos antes de checar de novo

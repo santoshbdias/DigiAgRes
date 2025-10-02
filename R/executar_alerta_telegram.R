@@ -24,7 +24,7 @@ executar_alerta_telegram <- function(mega="Cianorte", chat_id, bot_token, raio =
   # Coordenadas conhecidas
   coords <- list(
     'Cianorte' = list(x = 388, y = 240),
-    'Castelo'  = list(x = 437, y = 190),
+    'PresidenteCasteloBranco'  = list(x = 437, y = 190),
     'PontaGrossa' = list(x = 613, y = 361),
     'Cambé' = list(x = 509, y = 185),
     'Guarapuava' = list(x = 483, y = 405),
@@ -47,9 +47,9 @@ executar_alerta_telegram <- function(mega="Cianorte", chat_id, bot_token, raio =
   rgb_Res <- DigiAgRes::analisar_radar_PR(img, mega = mega, raio)
 
   # Classificação
-  resultado <- if (rgb_Res$R > 80 & rgb_Res$B < 30) {
+  resultado <- if (rgb_Res$R > 95 & rgb_Res$B < 30) {
     "Chuva forte (vermelho)"
-  } else if (rgb_Res$G > 70 & rgb_Res$R > 50) {
+  } else if (rgb_Res$G > 70 & rgb_Res$R > 70) {
     "Chuva leve (amarelo)"
   } else {'Sem chuva'}
 
