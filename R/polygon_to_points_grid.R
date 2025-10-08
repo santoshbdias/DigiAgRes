@@ -17,19 +17,23 @@
 
 polygon_to_points_grid <- function(dir_polygon, dist, plot = FALSE) {
 
-  pol <- st_read(dir_polygon, quiet = TRUE)
+  if (inherits(vector, "sf")) {
+    pol <- vector
+  } else {
+    pol <- sf::st_read(vector, quiet = TRUE)
+  }
 
   if (!st_is_longlat(pol)) { #Verificar se está em coordenadas geográficas (longitude/latitude)
     cat("O KML não está em coordenadas geográficas.\n")
   } else {
 
-    centroide <- suppressMessages((st_centroid(st_union(pol))))#Calcular centróide do polígono
-    coords <- st_coordinates(centroide) #obter coordenada central
+    centroide <- base::suppressMessages((sf::st_centroid(sf::st_union(pol))))#Calcular centróide do polígono
+    coords <- sf::st_coordinates(centroide) #obter coordenada central
 
     lon <- coords[1]
     lat <- coords[2]
 
-    utm_zone <- floor((lon + 180) / 6) + 1 #Calcular zona UTM
+    utm_zone <- base::floor((lon + 180) / 6) + 1 #Calcular zona UTM
 
     if (lat >= 0) {#Definir EPSG com base no hemisfério
       epsg_code <- 32600 + utm_zone  # Hemisfério Norte
@@ -40,22 +44,22 @@ polygon_to_points_grid <- function(dir_polygon, dist, plot = FALSE) {
     #    cat("📌 EPSG correspondente:", epsg_code, "\n")
 
     if (st_is_longlat(pol)) {
-      pol <- st_transform(pol, epsg_code)
+      pol <- sf::st_transform(pol, epsg_code)
     }
   }
 
   grid_spacing <- dist
-  grid <- st_make_grid(pol,
+  grid <- sf::st_make_grid(pol,
                        cellsize = grid_spacing,
                        what = "centers",
                        square = TRUE)
 
-  grid_points <- st_sf(geometry = grid)
+  grid_points <- sf::st_sf(geometry = grid)
   grid_points <- grid_points[st_within(grid_points, pol, sparse = FALSE), ]
 
   if (plot) {
-    plot(st_geometry(pol), border = "blue")
-    plot(st_geometry(grid_points), col = "red", pch = 20, add = TRUE)
+    plot(sf::st_geometry(pol), border = "blue")
+    plot(sf::st_geometry(grid_points), col = "red", pch = 20, add = TRUE)
   }
 
   return(grid_points)

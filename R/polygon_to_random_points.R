@@ -17,11 +17,15 @@
 #'@return Returns um arquivo vetorial (ex. KML)
 #'@export
 
-polygon_to_random_points <- function(dir_polygon, Npoints, min_dist, borda=20, plot = FALSE) {
+polygon_to_random_points <- function(polygon, Npoints, min_dist, borda=20, plot = FALSE) {
 
-  pol <- sf::st_read(dir_polygon, quiet = TRUE)
+  if (inherits(vector, "sf")) {
+    pol <- vector
+  } else {
+    pol <- sf::st_read(vector, quiet = TRUE)
+  }
 
-  max_pontos_teoricos <- suppressMessages(as.numeric(sf::st_area(pol) / (pi * (min_dist^2))+5))
+  max_pontos_teoricos <- suppressMessages(base::as.numeric(sf::st_area(pol))/(pi*(min_dist^2))+5)
 
   if (Npoints > floor(max_pontos_teoricos)) {
     stop(paste0('Número de pontos solicitado (',Npoints,
@@ -33,13 +37,13 @@ polygon_to_random_points <- function(dir_polygon, Npoints, min_dist, borda=20, p
     cat("O KML não está em coordenadas geográficas.\n")
   } else {
 
-    centroide <- suppressMessages((st_centroid(st_union(pol))))#Calcular centróide do polígono
-    coords <- st_coordinates(centroide) #obter coordenada central
+    centroide <- base::suppressMessages((sf::st_centroid(sf::st_union(pol))))#Calcular centróide do polígono
+    coords <- sf::st_coordinates(centroide) #obter coordenada central
 
     lon <- coords[1]
     lat <- coords[2]
 
-    utm_zone <- floor((lon + 180) / 6) + 1 #Calcular zona UTM
+    utm_zone <- base::floor((lon + 180) / 6) + 1 #Calcular zona UTM
 
     if (lat >= 0) {#Definir EPSG com base no hemisfério
       epsg_code <- 32600 + utm_zone  # Hemisfério Norte
@@ -49,7 +53,7 @@ polygon_to_random_points <- function(dir_polygon, Npoints, min_dist, borda=20, p
     #    cat("🗺️ Zona UTM:", utm_zone, "\n")
     #    cat("📌 EPSG correspondente:", epsg_code, "\n")
 
-    if (st_is_longlat(pol)) {
+    if (sf::st_is_longlat(pol)) {
       pol <- sf::st_transform(pol, epsg_code)
     }
   }
@@ -81,8 +85,8 @@ polygon_to_random_points <- function(dir_polygon, Npoints, min_dist, borda=20, p
   pontos_aleatorios <- generate_random_points(pol2, n = Npoints, min_dist)
 
   if (plot) {
-    plot(st_geometry(pol), border = "blue")
-    plot(st_geometry(pontos_aleatorios), col = "red", pch = 20, add = TRUE)
+    plot(sf::st_geometry(pol), border = "blue")
+    plot(sf::st_geometry(pontos_aleatorios), col = "red", pch = 20, add = TRUE)
   }
   return(pontos_aleatorios)
 }
