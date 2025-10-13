@@ -35,12 +35,41 @@ gerar_imagem_radar <- function(cidade, raio) {
 
   pasta_saida <- file.path(downloads_dir, "Radar.Simepar")
 
-  if (!dir.exists(pasta_saida)) dir.create(pasta_saida, recursive = TRUE)
+  # Verifique se a pasta existe antes de tentar limpá-la
+  if (dir.exists(pasta_saida)) {
+    # Liste todos os arquivos e subdiretórios na pasta
+    # O parâmetro `all.files = TRUE` garante que arquivos ocultos também sejam listados
+    arquivos_para_apagar <- list.files(pasta_saida,
+                                       full.names = TRUE,
+                                       recursive = TRUE,
+                                       all.files = TRUE)
+
+    # A função `list.files` inclui o diretório `.` e `..`, que não devem ser apagados.
+    # Esta linha remove esses itens da lista.
+    arquivos_para_apagar <- arquivos_para_apagar[!basename(arquivos_para_apagar) %in% c(".", "..")]
+
+    # Use `unlink()` para apagar todos os arquivos e subdiretórios
+    # `recursive = TRUE` apaga subdiretórios e seus conteúdos
+    # `force = TRUE` força a remoção mesmo que haja problemas de permissão (use com cautela)
+    unlink(arquivos_para_apagar, recursive = TRUE, force = TRUE)
+
+    arquivos_para_apagar <- list.files(pasta_saida,
+                                       full.names = TRUE,
+                                       recursive = TRUE,
+                                       all.files = TRUE)
+
+    if (length(arquivos_para_apagar) == 0) {
+      cat("A pasta foi limpa com sucesso.\n")
+    } else {
+      cat("Atenção: Não foi possível apagar todos os arquivos. Feche os arquivos abertos em outros programas.\n")
+    }
+
+  } else {
+    dir.create(pasta_saida, recursive = TRUE)
+    cat("O caminho especificado foi criado.\n")
+  }
 
   caminho <- paste0(pasta_saida,'/',cidade,'.png')
-
-  # Excluir arquivos png que já existe
-  if (file.exists(caminho)) file.remove(caminho)
 
   radar_img <- tryCatch(
     DigiAgRes::baixar_radar_PR(),
