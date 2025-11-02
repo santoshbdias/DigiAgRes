@@ -4,20 +4,20 @@
 #'
 #'@param dir_polygon Caminho do arquivo do polígono vetorial
 #'@param dist Valor da distancia entre os pontos em metros
-#'@param plot True ou FALSE para ver o plot do arquivo
+#'@param pt True ou FALSE para ver o plot do arquivo
 #'
 #'@importFrom units set_units
 #'@import sf
 #'
 #'@examples
 #'polygon_to_random_points(dir_polygon = "./Downloads/Demilitacao_Area.kml",
-#' dist = 100, plot = TRUE)
+#' dist = 100, pt = TRUE)
 #'
 #'@author Santos Henrique Brant Dias
 #'@return Returns um arquivo vetorial (ex. KML)
 #'@export
 
-polygon_to_random_points <- function(polygon, Npoints, min_dist, borda=20, plot = FALSE) {
+polygon_to_random_points <- function(polygon, Npoints, min_dist, borda=20, pt = TRUE, N = TRUE) {
 
   if (inherits(vector, "sf")) {
     pol <- vector
@@ -88,6 +88,12 @@ polygon_to_random_points <- function(polygon, Npoints, min_dist, borda=20, plot 
     plot(sf::st_geometry(pol), border = "blue")
     plot(sf::st_geometry(pontos_aleatorios), col = "red", pch = 20, add = TRUE)
   }
+
+  if (N) {
+    grid_points$ID_Ponto <- sprintf("%02d", seq_len(nrow(grid_points)))
+    names(grid_points)[names(grid_points) == "ID_Ponto"] <- "Name"
+  }
+
   return(pontos_aleatorios)
 }
 

@@ -113,12 +113,12 @@ A função polygon_to_points_grid() permite criar um grid regular de pontos cent
 grid_points <- polygon_to_points_grid(
   dir_polygon = "C:/Users/SantosDias/Documents/outra_area.kml",#Altere aqui o caminho para o seu computador
   dist = 100, #Distância entre os pontos, para 1 ponto por ha (dist=100)
-  plot = TRUE
 )
 
-# Exportar para KML
+# Exportar para KMLrandom_points, "C:/Users/SantosDias/Documents/pontos_aleatorios.shp"
 sf::st_write(grid_points, "C:/Users/SantosDias/Documents/grid_regular_pontos.kml",#Altere aqui o caminho para o seu computador
-             driver = "KML", append = FALSE)
+             driver = "KML", append = FALSE, layer_options = "LABELS_AS_NAME=YES")
+
 ```
 O sistema de coordenadas do KML é convertido automaticamente para UTM com base no centróide do polígono.
 
@@ -134,11 +134,11 @@ random_points <- polygon_to_random_points(
   dir_polygon = "C:/Users/SantosDias/Documents/outra_area.kml",#Altere aqui o caminho para o seu computador
   Npoints = 50, #Número de pontos para plotar na área
   min_dist = 30, #Distância mínima entre os pontos
-  plot = TRUE
 )
 
 # Exportar para shapefile
-sf::st_write(random_points, "C:/Users/SantosDias/Documents/pontos_aleatorios.shp", append = FALSE)
+sf::st_write(random_points, "C:/Users/SantosDias/Documents/pontos_aleatorios.shp",#Altere aqui o caminho para o seu computador
+             driver = "KML", append = FALSE, layer_options = "LABELS_AS_NAME=YES")
 ```
 
 

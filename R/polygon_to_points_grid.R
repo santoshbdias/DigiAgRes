@@ -4,24 +4,26 @@
 #'
 #'@param dir_polygon Caminho do arquivo do polígono vetorial
 #'@param dist Valor da distancia entre os pontos em metros
-#'@param plot True ou FALSE para ver o plot do arquivo
+#'@param pt True ou FALSE para ver o plot do arquivo
 #'
 #'@examples
 #'polygon_to_points_grid(dir_polygon = "./Downloads/Demilitacao_Area.kml",
-#' dist = 100, plot = TRUE)
+#' dist = 100, pt = TRUE)
 #'
 #'@author Santos Henrique Brant Dias
 #'@return Returns um arquivo vetorial (ex. KML)
 #'@export
 
 
-polygon_to_points_grid <- function(dir_polygon, dist, plot = FALSE) {
+polygon_to_points_grid <- function(dir_polygon, dist, pt = TRUE, N = TRUE) {
 
-  if (inherits(vector, "sf")) {
-    pol <- vector
-  } else {
-    pol <- sf::st_read(vector, quiet = TRUE)
-  }
+  if (inherits(dir_polygon, "sf")) {
+    pol <- dir_polygon
+  } else if (is.character(dir_polygon)) {
+    if (!file.exists(dir_polygon)) {
+      stop(paste("Arquivo não encontrado:", dir_polygon)) }
+    pol <- sf::st_read(dir_polygon, quiet = TRUE)
+  } else {stop("Input inválido. Deve ser um objeto 'sf' ou um caminho (string) para um arquivo.")}
 
   if (!st_is_longlat(pol)) { #Verificar se está em coordenadas geográficas (longitude/latitude)
     cat("O KML não está em coordenadas geográficas.\n")
@@ -57,9 +59,14 @@ polygon_to_points_grid <- function(dir_polygon, dist, plot = FALSE) {
   grid_points <- sf::st_sf(geometry = grid)
   grid_points <- grid_points[st_within(grid_points, pol, sparse = FALSE), ]
 
-  if (plot) {
+  if (pt) {
     plot(sf::st_geometry(pol), border = "blue")
     plot(sf::st_geometry(grid_points), col = "red", pch = 20, add = TRUE)
+  }
+
+  if (N) {
+    grid_points$ID_Ponto <- sprintf("%02d", seq_len(nrow(grid_points)))
+    names(grid_points)[names(grid_points) == "ID_Ponto"] <- "Name"
   }
 
   return(grid_points)

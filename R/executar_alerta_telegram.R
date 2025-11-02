@@ -49,7 +49,7 @@ executar_alerta_telegram <- function(mega="Cianorte", chat_id, bot_token, raio =
   # Classificação
   resultado <- if (rgb_Res$R > 70 & rgb_Res$B < 30) {
     "Chuva forte (vermelho)"
-  } else if (rgb_Res$G > 70 & rgb_Res$R > 60) {
+  } else if (rgb_Res$R > 60 & rgb_Res$B < 50) {
     "Chuva leve (amarelo)"
   } else {'Sem chuva'}
 
