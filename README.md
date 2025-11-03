@@ -221,8 +221,14 @@ repeat {
       for (i in 1:2) {
       cat(format(Sys.time(), "%Y-%m-%d %H:%M"), "- Executando...\n")
       
-        print(gerar_imagem_radar(names(area[i]), raio))
+      #cidade=names(area[i])
       
+        im_sv <- gerar_imagem_radar(names(area[i]), raio)
+        
+        print(im_sv)
+        
+        magick::image_write(im_sv, path = paste0('C:/Users/server_SantosDias/Downloads/Radar.Simepar/',area[i],'.png'), format = "png")
+        
         tryCatch({
           executar_alerta_telegram(
             mega = names(area[i]),
@@ -249,7 +255,7 @@ Colocar a data caso tenha data, caso não tenha, se deixar sem será utilizado a
 
 ``` r
 #Caso queira utilizar a data de hoje
-DigiAgRes::adicionar_dias_uteis(dias_uteis = 15)
+DigiAgRes::adicionar_dias_uteis(dias_uteis = 25)
 
 #Caso tenha uma data específica
 DigiAgRes::adicionar_dias_uteis("2025-10-29",5)
