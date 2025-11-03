@@ -38,18 +38,20 @@ executar_alerta_telegram <- function(mega="Cianorte", chat_id, bot_token, raio =
 
   cat(format(Sys.time(), "%H:%M"), "- Verificando radar para:", mega, "\n")
 
-  img <- tryCatch(baixar_radar_PR(), error = function(e) NULL)
+  img <- tryCatch(DigiAgRes::baixar_radar_PR(), error = function(e) NULL)
   if (is.null(img)) {
     message("❌ Falha ao baixar imagem do radar.")
     return(invisible(NULL))
   }
 
-  rgb_Res <- DigiAgRes::analisar_radar_PR(img, mega = mega, raio)
+  rgb_Res <- DigiAgRes::analisar_radar_PR(img, mega = 'PresidenteCasteloBranco', raio)
+
+  #print(rgb_Res)
 
   # Classificação
-  resultado <- if (rgb_Res$R > 60 & rgb_Res$B < 25) {
+  resultado <- if (rgb_Res$R > 70 & rgb_Res$B < 25) {
     "Chuva forte (vermelho)"
-  } else if (rgb_Res$R > 60 & rgb_Res$B < 50) {
+  } else if (rgb_Res$R > 65 & rgb_Res$B < 33) {
     "Chuva leve (amarelo)"
   } else {'Sem chuva'}
 
