@@ -244,10 +244,20 @@ repeat {
 
 ``` 
 
+### 7.️ Acrescenta dias úteis a uma data especifica.
+Colocar a data caso tenha data, caso não tenha, se deixar sem será utilizado a data de hoje.
+
+``` r
+#Caso queira utilizar a data de hoje
+DigiAgRes::adicionar_dias_uteis(dias_uteis = 15)
+
+#Caso tenha uma data específica
+DigiAgRes::adicionar_dias_uteis("2025-10-29",5)
+
+``` 
 
 
 ------------------------------------------------------------------------
-
 
 ## 👨‍💻 Autor
 

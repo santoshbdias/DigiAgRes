@@ -4,14 +4,14 @@
 \alias{polygon_to_points_grid}
 \title{Está função serve para criar pontos a partir de de um poligono}
 \usage{
-polygon_to_points_grid(dir_polygon, dist, plot = FALSE)
+polygon_to_points_grid(dir_polygon, dist, pt = TRUE, N = TRUE)
 }
 \arguments{
 \item{dir_polygon}{Caminho do arquivo do polígono vetorial}
 
 \item{dist}{Valor da distancia entre os pontos em metros}
 
-\item{plot}{True ou FALSE para ver o plot do arquivo}
+\item{pt}{True ou FALSE para ver o plot do arquivo}
 }
 \value{
 Returns um arquivo vetorial (ex. KML)
@@ -21,7 +21,7 @@ Função gera um grade pontos regulares para realização de análises, informa�
 }
 \examples{
 polygon_to_points_grid(dir_polygon = "./Downloads/Demilitacao_Area.kml",
-dist = 100, plot = TRUE)
+dist = 100, pt = TRUE)
 
 }
 \author{

@@ -5,17 +5,18 @@
 \title{Está função serve para criar pontos a partir de de um poligono}
 \usage{
 polygon_to_random_points(
-  dir_polygon,
+  polygon,
   Npoints,
   min_dist,
   borda = 20,
-  plot = FALSE
+  pt = TRUE,
+  N = TRUE
 )
 }
 \arguments{
-\item{dir_polygon}{Caminho do arquivo do polígono vetorial}
+\item{pt}{True ou FALSE para ver o plot do arquivo}
 
-\item{plot}{True ou FALSE para ver o plot do arquivo}
+\item{dir_polygon}{Caminho do arquivo do polígono vetorial}
 
 \item{dist}{Valor da distancia entre os pontos em metros}
 }
@@ -27,7 +28,7 @@ Função gera um grade pontos regulares para realização de análises, informa�
 }
 \examples{
 polygon_to_random_points(dir_polygon = "./Downloads/Demilitacao_Area.kml",
-dist = 100, plot = TRUE)
+dist = 100, pt = TRUE)
 
 }
 \author{

@@ -47,7 +47,7 @@ executar_alerta_telegram <- function(mega="Cianorte", chat_id, bot_token, raio =
   rgb_Res <- DigiAgRes::analisar_radar_PR(img, mega = mega, raio)
 
   # Classificação
-  resultado <- if (rgb_Res$R > 70 & rgb_Res$B < 30) {
+  resultado <- if (rgb_Res$R > 60 & rgb_Res$B < 25) {
     "Chuva forte (vermelho)"
   } else if (rgb_Res$R > 60 & rgb_Res$B < 50) {
     "Chuva leve (amarelo)"
@@ -62,7 +62,7 @@ executar_alerta_telegram <- function(mega="Cianorte", chat_id, bot_token, raio =
                             "Darwin"  = file.path(Sys.getenv("HOME"), "Downloads"),  # macOS
                             "Linux"   = file.path(Sys.getenv("HOME"), "Downloads"))   # Linux
 
-    caminho <- paste0(downloads_dir, '/', "Radar.Simepar",'/',mega,'.png')
+    caminho <- paste0(downloads_dir, "/Radar.Simepar/",mega,'.png')
 
     # Enviar imagem via Telegram
     httr::POST(
