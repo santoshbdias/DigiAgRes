@@ -12,6 +12,8 @@ executar_alerta_telegram(mega = "Cianorte", chat_id, bot_token, raio = 50)
 \item{chat_id}{Código identificador do grupo ou chat do Telegram (ex: "-1001234567890").}
 
 \item{bot_token}{Token do bot do Telegram (obtido via @BotFather).}
+
+\item{raio}{Raio que vai considerar as nuvens}
 }
 \value{
 Não retorna valor, mas envia uma mensagem automática ao Telegram em caso de detecção de chuva.
@@ -24,6 +26,12 @@ com marcações geográficas e legenda é enviada automaticamente para um grupo 
 \details{
 A imagem de radar é obtida em tempo real do Simepar. A função compara os valores RGB de pixels centrais da cidade para inferir a presença de chuva.
 A mensagem enviada inclui imagem com marcações e legenda no formato Markdown.
+}
+\examples{
+if (interactive()) {
+executar_alerta_telegram(mega="Cianorte", chat_id="555585458", bot_token="555585458", raio = 50)
+}
+
 }
 \author{
 Santos Henrique Brant Dias

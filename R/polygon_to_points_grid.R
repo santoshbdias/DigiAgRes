@@ -5,10 +5,13 @@
 #'@param dir_polygon Caminho do arquivo do polígono vetorial
 #'@param dist Valor da distancia entre os pontos em metros
 #'@param pt True ou FALSE para ver o plot do arquivo
+#'@param N True ou FALSE para
 #'
 #'@examples
+#' if (interactive()) {
 #'polygon_to_points_grid(dir_polygon = "./Downloads/Demilitacao_Area.kml",
 #' dist = 100, pt = TRUE)
+#' }
 #'
 #'@author Santos Henrique Brant Dias
 #'@return Returns um arquivo vetorial (ex. KML)

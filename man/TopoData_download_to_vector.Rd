@@ -9,7 +9,7 @@ TopoData_download_to_vector(vector, layer = "Declividade")
 \arguments{
 \item{vector}{Caminho do arquivo do polígono vetorial}
 
-\item{pathdow}{Valor da distancia entre os pontos em metros}
+\item{layer}{Valor da distancia entre os pontos em metros}
 }
 \value{
 Raster do TopoData
@@ -18,7 +18,9 @@ Raster do TopoData
 Função faz o download do TOPODATA INPE. Pode ser feito o download das seguintes variavéis: Altitude, Declividade, RelevoSombreado, Orientação, FormaTerreno, DivisoresTalvegues, Curv.Vertical, Curv.Horizontal
 }
 \examples{
+if (interactive()) {
 Altitude <- TopoData_download_to_vector(vector = "C:/User/Downloads/area.kml", layer = "Altitude")
+}
 
 }
 \author{

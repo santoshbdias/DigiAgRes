@@ -19,7 +19,7 @@ enviar_mensagem_status_diaria(
 
 \item{chat_id}{ID do chat ou grupo do Telegram que receberá a mensagem.}
 
-\item{img_plot}{Objeto de imagem gerado por \code{magick::image_draw()}, contendo o radar com marcações.}
+\item{mensagem}{Mensagem que vai aparecer na tela}
 }
 \value{
 Retorna \code{NULL} de forma invisível. Utiliza efeitos colaterais (envio de mensagem).
@@ -34,7 +34,6 @@ A imagem será salva temporariamente e enviada com uma legenda informando que o 
 \dontrun{
 enviar_mensagem_status_diaria(
   hora_alerta = "13:00",
-  img_plot = radar_img,
   bot_token = "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
   chat_id = "-1001234567890"
 )

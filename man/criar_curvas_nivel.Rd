@@ -20,6 +20,8 @@ criar_curvas_nivel(
 \item{intervalo}{Intervalo das curvas de nível em metros (padrão = 5)}
 
 \item{buffer_dist}{Distância do buffer em metros (padrão = 200)}
+
+\item{ajust}{Para fazer o corte usando o kml para sair identico ao kml se for T}
 }
 \value{
 Objeto \code{sf} com as curvas de nível e atributo \code{elev}
@@ -50,7 +52,7 @@ curvas <- criar_curvas_nivel(raster_altitude="dem_sad69.tif", kml="area.kml", in
 
 }
 \seealso{
-\code{\link[terra:contour]{terra::as.contour()}}, \code{\link[sf:geos_unary]{sf::st_buffer()}}, \code{\link[terra:mask]{terra::mask()}}
+\code{\link[terra:as.contour]{terra::as.contour()}}, \code{\link[sf:st_buffer]{sf::st_buffer()}}, \code{\link[terra:mask]{terra::mask()}}
 }
 \author{
 Santos Henrique Brant Dias

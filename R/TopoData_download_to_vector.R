@@ -3,14 +3,16 @@
 #'@description Função faz o download do TOPODATA INPE. Pode ser feito o download das seguintes variavéis: Altitude, Declividade, RelevoSombreado, Orientação, FormaTerreno, DivisoresTalvegues, Curv.Vertical, Curv.Horizontal
 #'
 #'@param vector Caminho do arquivo do polígono vetorial
-#'@param pathdow Valor da distancia entre os pontos em metros
+#'@param layer Valor da distancia entre os pontos em metros
 #'
 #'@importFrom sf st_read
 #'@importFrom dplyr %>%
 #'@importFrom terra rast
 #'
 #'@examples
+#' if (interactive()) {
 #'Altitude <- TopoData_download_to_vector(vector = "C:/User/Downloads/area.kml", layer = "Altitude")
+#'}
 #'
 #'@author Santos Henrique Brant Dias
 #'@return Raster do TopoData

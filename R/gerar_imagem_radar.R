@@ -5,8 +5,9 @@
 #' ao redor das coordenadas de cidades de interesse. A imagem gerada pode ser usada para envio
 #' por Telegram ou outras finalidades.
 #'
-#' @param coords Lista com coordenadas nomeadas das cidades. Exemplo: list("Cianorte" = list(x=388, y=240))
+#' @param cidade Lista com coordenadas nomeadas das cidades. Exemplo: list("Cianorte" = list(x=388, y=240))
 #' @param raio Raio da área de análise em pixels (default: 40)
+#'
 #'
 #' @return Objeto de imagem com as marcações, ou NULL se houver falha no download
 #'
@@ -16,16 +17,12 @@
 #'
 #' @examples
 #'
-#' coords <- list(
-#'   'Cianorte' = list(x = 388, y = 240),
-#'   'Castelo'  = list(x = 437, y = 190)
-#' )
-#' img_plot <- gerar_imagem_radar(coords)
+#' img_plot <- gerar_imagem_radar('Cianorte', 50)
 #'
 #' @author Santos Henrique Brant Dias
 #' @export
 
-gerar_imagem_radar <- function(cidade, raio) {
+gerar_imagem_radar <- function(cidade, raio=50) {
 
   # Detectar pasta de Downloads
   downloads_dir <- switch(Sys.info()[["sysname"]],

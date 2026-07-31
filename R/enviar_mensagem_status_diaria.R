@@ -4,9 +4,9 @@
 #' Esta função verifica se o horário atual coincide com o horário programado (\code{hora_alerta}) e, se for o caso, envia uma imagem do radar meteorológico para o Telegram, indicando que o sistema está ativo.
 #'
 #' @param hora_alerta Horário programado para envio da mensagem (formato "HH:MM"). Default: "13:00".
-#' @param img_plot Objeto de imagem gerado por \code{magick::image_draw()}, contendo o radar com marcações.
 #' @param bot_token Token do bot do Telegram obtido via \code{@BotFather}.
 #' @param chat_id ID do chat ou grupo do Telegram que receberá a mensagem.
+#' @param mensagem Mensagem que vai aparecer na tela
 #'
 #' @return Retorna \code{NULL} de forma invisível. Utiliza efeitos colaterais (envio de mensagem).
 #'
@@ -20,7 +20,6 @@
 #' \dontrun{
 #' enviar_mensagem_status_diaria(
 #'   hora_alerta = "13:00",
-#'   img_plot = radar_img,
 #'   bot_token = "123456:ABC-DEF1234ghIkl-zyx57W2v1u123ew11",
 #'   chat_id = "-1001234567890"
 #' )

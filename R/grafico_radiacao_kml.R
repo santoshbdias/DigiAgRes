@@ -1,28 +1,32 @@
-# #' Gera gráfico de radiação solar diária com base em KML e NASA POWER
-# #'
-# #' @description
-# #' Esta função extrai o centroide de uma área contida em um arquivo .kml e gera um gráfico
-# #' de radiação solar diária (W/m²) ao longo do ano, com destaque para uma data específica (evento).
-# #'
-# #' @param kml_path Caminho para o arquivo .kml com a área geográfica de interesse
-# #' @param ano Ano a ser analisado (default = ano atual)
-# #' @param data_evento Data do evento climático de interesse para destaque (ex: "2024-08-27")
-# #' @param cor_evento Cor do marcador da data do evento (padrão = "red")
-# #'
-# #' @return Gráfico ggplot com radiação solar diária
-# #'
-# #' @importFrom sf st_read st_geometry st_centroid st_coordinates
-# #' @importFrom httr GET content
-# #' @importFrom jsonlite fromJSON
-# #' @importFrom dplyr tibble mutate filter arrange
-# #' @importFrom lubridate ymd
-# #' @importFrom ggplot2 ggplot aes geom_line geom_vline geom_text scale_x_date labs theme_minimal
-# #'
-# #' @examples
-# #' grafico_radiacao_kml("C:/caminho/area.kml", ano = 2024, data_evento = "2024-08-27")
-# #'
-# #' @author Santos Henrique Brant Dias
-# #' @export
+#' #' Gera gráfico de radiação solar diária com base em KML e NASA POWER
+#' #'
+#' #' @description
+#' #' Esta função extrai o centroide de uma área contida em um arquivo .kml e gera um gráfico
+#' #' de radiação solar diária (W/m²) ao longo do ano, com destaque para uma data específica (evento).
+#' #'
+#' #' @param kml_path Caminho para o arquivo .kml com a área geográfica de interesse
+#' #' @param ano Ano a ser analisado (default = ano atual)
+#' #' @param data_evento Data do evento climático de interesse para destaque (ex: "2024-08-27")
+#' #' @param cor_evento Cor do marcador da data do evento (padrão = "red")
+#' #'
+#' #' @return Gráfico ggplot com radiação solar diária
+#' #'
+#' #' @importFrom sf st_read st_geometry st_centroid st_coordinates
+#' #' @importFrom httr GET content
+#' #' @importFrom jsonlite fromJSON
+#' #' @importFrom dplyr tibble mutate filter arrange
+#' #' @importFrom lubridate ymd
+#' #' @importFrom ggplot2 ggplot aes geom_line geom_vline geom_text scale_x_date labs theme_minimal
+#' #'
+#' #' @examples
+#' #' grafico_radiacao_kml("C:/caminho/area.kml", ano = 2024, data_evento = "2024-08-27")
+#' #'
+#' #' @author Santos Henrique Brant Dias
+#' #' @export
+#'
+#' kml_path <- 'S:/OneDrive/Acad_Profisional/0_Pericias_Judiciais/.24_01-0001134-10.2022.8.16.0151 - Santa Isabel do Ivaí - Seguro -Nplanta/TerezinhaAPrigol.kml'
+#' data_evento <- '30/06/2021'
+#'
 #' grafico_radiacao_kml <- function(kml_path,
 #'                                  ano = as.numeric(format(Sys.Date(), "%Y")),
 #'                                  data_evento,

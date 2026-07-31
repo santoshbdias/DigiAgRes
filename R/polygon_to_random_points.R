@@ -2,16 +2,22 @@
 #'
 #'@description Função gera um grade pontos regulares para realização de análises, informações geradas a partir arquivo vetorial tipo polígono, que pode ser feito pelo Google Esrth Pro com um arquivo KML.
 #'
-#'@param dir_polygon Caminho do arquivo do polígono vetorial
-#'@param dist Valor da distancia entre os pontos em metros
+#'@param polygon Caminho do arquivo do polígono vetorial
+#'@param Npoints Número de pontos para plotar
+#'@param min_dist Valor da distancia entre os pontos em metros
+#'@param borda Distancia da borda para não colocar pontos
 #'@param pt True ou FALSE para ver o plot do arquivo
+#'@param N True ou FALSE para
+#'
 #'
 #'@importFrom units set_units
 #'@import sf
 #'
 #'@examples
+#' if (interactive()) {
 #'polygon_to_random_points(dir_polygon = "./Downloads/Demilitacao_Area.kml",
 #' dist = 100, pt = TRUE)
+#' }
 #'
 #'@author Santos Henrique Brant Dias
 #'@return Returns um arquivo vetorial (ex. KML)
@@ -19,10 +25,10 @@
 
 polygon_to_random_points <- function(polygon, Npoints, min_dist, borda=20, pt = TRUE, N = TRUE) {
 
-  if (inherits(vector, "sf")) {
-    pol <- vector
+  if (inherits(polygon, "sf")) {
+    pol <- polygon
   } else {
-    pol <- sf::st_read(vector, quiet = TRUE)
+    pol <- sf::st_read(polygon, quiet = TRUE)
   }
 
   max_pontos_teoricos <- suppressMessages(base::as.numeric(sf::st_area(pol))/(pi*(min_dist^2))+5)
@@ -84,14 +90,14 @@ polygon_to_random_points <- function(polygon, Npoints, min_dist, borda=20, pt = 
   #set.seed(251292)
   pontos_aleatorios <- generate_random_points(pol2, n = Npoints, min_dist)
 
-  if (plot) {
-    plot(sf::st_geometry(pol), border = "blue")
-    plot(sf::st_geometry(pontos_aleatorios), col = "red", pch = 20, add = TRUE)
+  if (N) {
+    pontos_aleatorios$ID_Ponto <- sprintf("%02d", seq_len(nrow(pontos_aleatorios)))
+    names(pontos_aleatorios)[names(pontos_aleatorios) == "ID_Ponto"] <- "Name"
   }
 
-  if (N) {
-    grid_points$ID_Ponto <- sprintf("%02d", seq_len(nrow(grid_points)))
-    names(grid_points)[names(grid_points) == "ID_Ponto"] <- "Name"
+  if (pt) {
+    plot(sf::st_geometry(pol), border = "blue")
+    plot(sf::st_geometry(pontos_aleatorios), col = "red", pch = 20, add = TRUE)
   }
 
   return(pontos_aleatorios)

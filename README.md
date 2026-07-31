@@ -131,9 +131,9 @@ Essa função permitirá gerar pontos aleatórios dentro de um polígono, respei
 ``` r
 
 random_points <- polygon_to_random_points(
-  dir_polygon = "C:/Users/SantosDias/Documents/outra_area.kml",#Altere aqui o caminho para o seu computador
+  polygon = "C:/Users/SantosDias/Documents/outra_area.kml",#Altere aqui o caminho para o seu computador
   Npoints = 50, #Número de pontos para plotar na área
-  min_dist = 30, #Distância mínima entre os pontos
+  min_dist = 30 #Distância mínima entre os pontos
 )
 
 # Exportar para shapefile

@@ -12,6 +12,8 @@ polygon_to_points_grid(dir_polygon, dist, pt = TRUE, N = TRUE)
 \item{dist}{Valor da distancia entre os pontos em metros}
 
 \item{pt}{True ou FALSE para ver o plot do arquivo}
+
+\item{N}{True ou FALSE para}
 }
 \value{
 Returns um arquivo vetorial (ex. KML)
@@ -20,8 +22,10 @@ Returns um arquivo vetorial (ex. KML)
 Função gera um grade pontos regulares para realização de análises, informações geradas a partir arquivo vetorial tipo polígono, que pode ser feito pelo Google Esrth Pro com um arquivo KML.
 }
 \examples{
+if (interactive()) {
 polygon_to_points_grid(dir_polygon = "./Downloads/Demilitacao_Area.kml",
 dist = 100, pt = TRUE)
+}
 
 }
 \author{

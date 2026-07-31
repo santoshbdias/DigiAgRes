@@ -7,12 +7,18 @@
 #' @param mega Nome da cidade a ser monitorada. Deve ser um dos nomes previamente cadastrados na função (ex: "Cianorte", "Castelo").
 #' @param chat_id Código identificador do grupo ou chat do Telegram (ex: "-1001234567890").
 #' @param bot_token Token do bot do Telegram (obtido via @BotFather).
+#' @param raio Raio que vai considerar as nuvens
 #'
 #' @details A imagem de radar é obtida em tempo real do Simepar. A função compara os valores RGB de pixels centrais da cidade para inferir a presença de chuva.
 #' A mensagem enviada inclui imagem com marcações e legenda no formato Markdown.
 #'
 #' @import httr
 #' @import magick
+#'
+#'@examples
+#' if (interactive()) {
+#'executar_alerta_telegram(mega="Cianorte", chat_id="555585458", bot_token="555585458", raio = 50)
+#'}
 #'
 #' @return Não retorna valor, mas envia uma mensagem automática ao Telegram em caso de detecção de chuva.
 #'

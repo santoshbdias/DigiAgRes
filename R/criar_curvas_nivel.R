@@ -11,6 +11,7 @@
 #' @param kml Objeto `sf` ou caminho/URL para arquivo KML com a área de interesse
 #' @param buffer_dist Distância do buffer em metros (padrão = 200)
 #' @param intervalo Intervalo das curvas de nível em metros (padrão = 5)
+#' @param ajust Para fazer o corte usando o kml para sair identico ao kml se for T
 #'
 #' @return Objeto `sf` com as curvas de nível e atributo `elev`
 #'

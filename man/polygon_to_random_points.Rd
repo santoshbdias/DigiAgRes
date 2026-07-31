@@ -14,11 +14,17 @@ polygon_to_random_points(
 )
 }
 \arguments{
+\item{polygon}{Caminho do arquivo do polígono vetorial}
+
+\item{Npoints}{Número de pontos para plotar}
+
+\item{min_dist}{Valor da distancia entre os pontos em metros}
+
+\item{borda}{Distancia da borda para não colocar pontos}
+
 \item{pt}{True ou FALSE para ver o plot do arquivo}
 
-\item{dir_polygon}{Caminho do arquivo do polígono vetorial}
-
-\item{dist}{Valor da distancia entre os pontos em metros}
+\item{N}{True ou FALSE para}
 }
 \value{
 Returns um arquivo vetorial (ex. KML)
@@ -27,8 +33,10 @@ Returns um arquivo vetorial (ex. KML)
 Função gera um grade pontos regulares para realização de análises, informações geradas a partir arquivo vetorial tipo polígono, que pode ser feito pelo Google Esrth Pro com um arquivo KML.
 }
 \examples{
+if (interactive()) {
 polygon_to_random_points(dir_polygon = "./Downloads/Demilitacao_Area.kml",
 dist = 100, pt = TRUE)
+}
 
 }
 \author{
