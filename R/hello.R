@@ -33,5 +33,38 @@
 #usethis::use_test("TopoData_download_to_vector")
 #
 #
+#system('git config --global --add safe.directory "D:/OneDrive/Pesquisa/pacote_R/DigiAgRes"')
+#
+#system("git status")
+#
+#system("git add .")
+#
+#system('git commit -m "Atualizar TopoData"')
+#
+#system("git push")
+#
+#
+#
 
+# atualizar_github <- function(mensagem = "Atualização do pacote") {
+#
+#   system("git add .")
+#
+#   system2(
+#     "git",
+#     args = c(
+#       "commit",
+#       "-m",
+#       shQuote(mensagem)
+#     )
+#   )
+#
+#   system("git push")
+#
+#   message("✅ GitHub atualizado.")
+# }
+
+
+
+#atualizar_github("Corrige TOPODATA")
 

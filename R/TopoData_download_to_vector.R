@@ -40,7 +40,7 @@ TopoData_download_to_vector <- function(vector, layer = "Declividade"){
 
   # STAC trabalha com coordenadas geográficas
   area_wgs84 <- sf::st_transform(
-    vector,
+    area,
     sf::st_crs(4326)
   )
 
