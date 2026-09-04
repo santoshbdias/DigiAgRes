@@ -8,6 +8,13 @@
 #'@importFrom sf st_read
 #'@importFrom dplyr %>%
 #'@importFrom terra rast
+#'@importFrom rstac stac
+#'@importFrom rstac stac_search
+#'@importFrom rstac post_request
+#'@importFrom rstac items_fetch
+#'@importFrom rstac items_length
+#'@importFrom rstac assets_url
+#'@importFrom rstac assets_select
 #'
 #'@examples
 #' if (interactive()) {
@@ -26,44 +33,118 @@ TopoData_download_to_vector <- function(vector, layer = "Declividade"){
     area <- sf::st_read(vector, quiet = TRUE)
   }
 
-  kml_url <- "https://www.google.com/maps/d/u/0/kml?mid=1Yle0c2VU4waXo-Kzn0RBONZG9NgSYas&resourcekey&forcekml=1"
 
-  kml_file <- tempfile(fileext = ".kml")
-  if (!file.exists(kml_file)) {
-    download.file(kml_url, destfile = kml_file, mode = "wb")
-    tiles <- sf::st_read(kml_file, quiet = TRUE)
-    message("✅ Arquivo  tiles baixado com sucesso.")
-  } else {
-    message("⚠️ Arquivo já existe. Pulando o download.")
-    tiles <- sf::st_read(kml_file, quiet = TRUE)
+  # ============================================================
+  # Consultar tiles TOPODATA diretamente pelo STAC do INPE
+  # ============================================================
+
+  # STAC trabalha com coordenadas geográficas
+  area_wgs84 <- sf::st_transform(
+    vector,
+    sf::st_crs(4326)
+  )
+
+  # Bounding box da área
+  bb <- sf::st_bbox(area_wgs84)
+
+  bbox <- c(
+    unname(bb["xmin"]),
+    unname(bb["ymin"]),
+    unname(bb["xmax"]),
+    unname(bb["ymax"])
+  )
+
+  message(
+    "📍 Bounding box: ",
+    paste(round(bbox, 6), collapse = " | ")
+  )
+
+  # Catálogo STAC do INPE
+  catalog <- rstac::stac(
+    "https://data.inpe.br/bdc/stac/v1/"
+  )
+
+  # Buscar tiles TOPODATA que intersectam a área
+  consulta <- catalog |>
+    rstac::stac_search(
+      collections = "topodata-1",
+      bbox = bbox,
+      limit = 1000
+    ) |>
+    rstac::post_request()
+
+  # Carregar os itens encontrados
+  consulta <- rstac::items_fetch(
+    consulta
+  )
+
+  n_tiles <- rstac::items_length(consulta)
+
+  if (n_tiles == 0) {
+    stop(
+      "❌ Nenhum tile TOPODATA encontrado para a área informada."
+    )
   }
 
-  if (sf::st_crs(area) != sf::st_crs(tiles)) {#Garantir que ambos estejam no mesmo CRS
-    area <- sf::st_transform(area, sf::st_crs(tiles))
-  }
+  message("✅ Tiles encontrados: ", n_tiles)
 
-  tiles_intersectados <- suppressMessages(tiles[sf::st_intersects(tiles, area, sparse = FALSE), ])#Fazer interseção espacial
 
-  html_text <- tiles_intersectados$Description
+
+
+
 
   # Mapear layers para os sufixos
   sufixos <- c(
-    Altitude = "ZN.zip",
-    Declividade = "SN.zip",
-    RelevoSombreado = "RS.zip",
-    Orientacao = "ON.zip",
-    FormaTerreno = "FT.zip",
-    DivisoresTalvegues = "DD.zip",
-    Curv.Vertical = "VN.zip",
-    Curv.Horizontal = "HN.zip"
+    Altitude = "ZN",
+    Declividade = "SN",
+    RelevoSombreado = "RS",
+    Orientacao = "ON",
+    FormaTerreno = "FT",
+    DivisoresTalvegues = "DD",
+    Curv.Vertical = "VN",
+    Curv.Horizontal = "HN"
   )
 
-  if (!layer %in% names(sufixos)) {
-    stop("❌ Layer inválido. Use um dos nomes: ", paste(names(sufixos), collapse = ", "))
+
+
+
+
+
+
+
+  # Asset correspondente à variável escolhida
+  asset <- sufixos[[layer]]
+
+  message("🗺️ Variável TOPODATA: ", layer)
+  message("🔹 Asset STAC: ", asset)
+
+  # Selecionar o asset nos tiles encontrados
+  consulta_asset <- rstac::assets_select(
+    consulta,
+    asset_names = asset
+  )
+
+  # Obter URLs dos arquivos
+  link_tif <- rstac::assets_url(
+    consulta_asset,
+    asset_names = asset
+  )
+
+  link_tif <- unique(link_tif)
+
+  if (length(link_tif) == 0 || all(is.na(link_tif))) {
+    stop(
+      "❌ Não foi encontrado o asset ",
+      asset,
+      " para os tiles selecionados."
+    )
   }
 
-  # Link ZIP certo
-  link_zip <- stringr::str_extract(html_text, paste0("http[^<]*", sufixos[layer]))
+  message(
+    "⬇️ Assets encontrados: ",
+    length(link_tif)
+  )
+
 
   # Detectar pasta de Downloads
   downloads_dir <- switch(Sys.info()[["sysname"]],
@@ -72,45 +153,68 @@ TopoData_download_to_vector <- function(vector, layer = "Declividade"){
                           "Linux"   = file.path(Sys.getenv("HOME"), "Downloads")   # Linux
   )
 
-  destino <- file.path(downloads_dir, basename(link_zip))#Definir caminho para salvar
-  pasta_saida <- file.path(downloads_dir, "TOPODATA")
+  pasta_saida <- file.path(
+    downloads_dir,
+    "TOPODATA"
+  )
 
-  if (!dir.exists(pasta_saida)) dir.create(pasta_saida, recursive = TRUE)
-
-  for (px in 1:length(destino)) {
-    prefixo <- tools::file_path_sans_ext(basename(destino[px]))
-
-    arquivo_tif <- list.files(
+  if (!dir.exists(pasta_saida)) {
+    dir.create(
       pasta_saida,
-      pattern = paste0("^", prefixo, "\\.tif$"),
-      full.names = TRUE
+      recursive = TRUE
+    )
+  }
+
+  # ============================================================
+  # Download dos tiles
+  # ============================================================
+
+  destino <- file.path(
+    pasta_saida,
+    basename(
+      sub("\\?.*$", "", link_tif)
+    )
+  )
+
+  for (px in seq_along(link_tif)) {
+
+    # Garantir nome do arquivo
+    destino[px] <- file.path(
+      pasta_saida,
+      basename(
+        sub("\\?.*$", "", link_tif[px])
+      )
     )
 
-    if (length(arquivo_tif) == 0) {
-    # Excluir arquivos zip corrompidos
-    if (file.exists(destino[px])) {
-      base::file.remove(destino[px])
-      base::message("Arquivo ",prefixo,'.zip'," removido")
-    }
-
-    # Se não existe o ZIP → baixa
     if (!file.exists(destino[px])) {
-      message("⬇️ Baixando tile: ", basename(link_zip[px]))
-      utils::download.file(link_zip[px], destfile = destino[px], mode = "wb", quiet = TRUE)
-    }
 
-    # Se não existe o TIF correspondente → descompacta
+      message(
+        "⬇️ Baixando tile: ",
+        basename(destino[px])
+      )
 
-    message("📂 Descompactando: ", basename(destino[px]))
-    utils::unzip(destino[px], exdir = pasta_saida)
+      utils::download.file(
+        link_tif[px],
+        destfile = destino[px],
+        mode = "wb",
+        quiet = TRUE
+      )
+
+    } else {
+
+      message(
+        "✔ Tile já existe: ",
+        basename(destino[px])
+      )
     }
   }
 
-  arquivos_tifs_Vector <- list.files(
-    pasta_saida,
-    pattern = paste0("^(", paste0(tools::file_path_sans_ext(basename(destino)), collapse = "|"), ")\\.tif$"),
-    full.names = TRUE
-  )
+
+
+  arquivos_tifs_Vector <- destino[
+    file.exists(destino)
+  ]
+
 
   # Abre todos como lista de SpatRaster
   rasters <- lapply(arquivos_tifs_Vector, terra::rast)
